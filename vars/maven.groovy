@@ -4,7 +4,7 @@
 	ejecucion.call()
 */
 
-def call(*stages){
+def call(String[] stages){
   
     stage('Compile') {
         STAGE = env.STAGE_NAME
