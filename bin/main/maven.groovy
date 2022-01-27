@@ -4,11 +4,16 @@
 	ejecucion.call()
 */
 
-def call(){
+def call(*stages){
   
     stage('Compile') {
         STAGE = env.STAGE_NAME
-        sh "mvn clean compile -e"
+        when {
+            expression { return stages.contains("Compile") }
+        }
+        steps {
+            sh "mvn clean compile -e"
+        }
     }
 
     stage('Test') {

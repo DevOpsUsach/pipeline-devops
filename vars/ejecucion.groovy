@@ -21,15 +21,15 @@ def call(){
             script {
               println "${params.stage}"
 
-              String[] str;
-              str = params.stage.split(';');
+              String[] stages;
+              stages = params.stage.split(';');
 
-              println "${str}"
+              println "${stages}"
 
               if (params.buildTool == 'gradle') {
                 gradle() /* archivo gradle.groovy */
               } else {
-                maven() /* archivo maven.groovy */
+                maven(stages) /* archivo maven.groovy */
               }
             }
           }
