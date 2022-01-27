@@ -7,14 +7,12 @@
 def call(){
   
     stage('Build & Unit Test'){
-        STAGE = env.STAGE_NAME
         sh 'env'
         sh './gradlew clean build'
         println "Stage: ${env.STAGE_NAME}"
     }
 
     stage('SonarQube analysis') {
-        STAGE = env.STAGE_NAME
         def scannerHome = tool 'SonarQube Scanner 4.6.2'
             withSonarQubeEnv('SonarQube local'){
             sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sonarqube-token -Dsonar.java.binaries=build"
@@ -22,23 +20,19 @@ def call(){
     }
 
     stage('Run'){
-        STAGE = env.STAGE_NAME
         sh "nohup bash gradlew bootRun &"
     }
 
     stage('Wait') {
-        STAGE = env.STAGE_NAME
         println "Sleep 20 seconds"
         sleep(time: 20, unit: "SECONDS")
     }
 
     stage('Curl'){
-        STAGE = env.STAGE_NAME
         sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
     }
 
     stage('Nexus') {
-        STAGE = env.STAGE_NAME
         nexusPublisher nexusInstanceId: 'nexus',
         nexusRepositoryId: 'ejemplo-gradle',
         packages: [

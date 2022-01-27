@@ -1,10 +1,6 @@
 def call(){
   pipeline {
-      agent any
-
-    environment {
-      STAGE = ''
-    }
+    agent any
 
     parameters {
       choice choices: ['gradle', 'maven'], description: 'Indicar herramienta de construcción', name: 'buildTool'
@@ -31,12 +27,12 @@ def call(){
 
     post {
       success {
-        slackSend color: 'good', message: '[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución exitosa.'
+        slackSend color: 'good', message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución de stage '${env.STAGE_NAME}' exitosa."
       }
 
       failure {
-        slackSend color: 'danger', message: '[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución fallida en stage "${STAGE}" build número ${env.BUILD_NUMBER}.'
-        error 'Ejecución fallida en stage ${STAGE}'
+        slackSend color: 'danger', message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución fallida en stage '${env.STAGE_NAME}' build número ${env.BUILD_NUMBER}."
+        error "Ejecución fallida en stage ${env.STAGE_NAME}"
       }
     }
   }
