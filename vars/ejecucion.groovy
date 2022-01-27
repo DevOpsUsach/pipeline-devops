@@ -21,6 +21,11 @@ def call(){
             script {
               println "${params.stage}"
 
+              String[] str;
+              str = params.stage.split(';');
+
+              println "${str}"
+
               if (params.buildTool == 'gradle') {
                 gradle() /* archivo gradle.groovy */
               } else {
@@ -43,3 +48,5 @@ def call(){
     }
   }
 }
+
+return this;
