@@ -4,7 +4,7 @@
 	ejecucion.call()
 */
 
-def call(){
+def call(String[] stages){
   
     stage('BuildTest'){
         if (stages.contains("BuildTest")) {
