@@ -8,10 +8,7 @@ def call(String[] stages){
   
     stage('Compile') {
         STAGE = env.STAGE_NAME
-        when {
-            expression { return stages.contains("Compile") }
-        }
-        steps {
+        if (stages.contains("Compile")) {
             sh "mvn clean compile -e"
         }
     }
@@ -26,7 +23,7 @@ def call(String[] stages){
         sh "mvn clean package -e"
     }
 
-    stage('SonarQube analysis') {
+    stage('SonarQube') {
         STAGE = env.STAGE_NAME
         def scannerHome = tool 'SonarQube Scanner 4.6.2'
             withSonarQubeEnv('SonarQube local'){

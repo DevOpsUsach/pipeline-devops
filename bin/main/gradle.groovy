@@ -13,7 +13,7 @@ def call(){
         println "Stage: ${env.STAGE_NAME}"
     }
 
-    stage('SonarQube analysis') {
+    stage('SonarQube') {
         STAGE = env.STAGE_NAME
         def scannerHome = tool 'SonarQube Scanner 4.6.2'
             withSonarQubeEnv('SonarQube local'){
