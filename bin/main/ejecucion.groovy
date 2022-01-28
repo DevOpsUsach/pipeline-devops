@@ -41,8 +41,8 @@ def call(){
       }
 
       failure {
-        slackSend color: 'danger', message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] La ejecución del build número ${env.BUILD_NUMBER}. falló"
-        error "Ejecución del build número ${env.BUILD_NUMBER} fallida"
+        slackSend color: 'danger', message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] La ejecución del build número ${env.BUILD_NUMBER} falló."
+        error "Ejecución del build número ${env.BUILD_NUMBER} fallida."
       }
     }
   }
