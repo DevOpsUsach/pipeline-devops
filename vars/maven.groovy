@@ -5,9 +5,17 @@
 */
 
 def call(String[] stages){
+
+    def allStages = false;
+
+    stage('Validate'){
+        if (stages.size == 0){
+            allStages = true
+        }
+    }
   
     stage('Compile') {
-        if (stages.contains("Compile")) {
+        if (stages.contains("Compile") || allStage) {
             sh "mvn clean compile -e"
         }
     }
