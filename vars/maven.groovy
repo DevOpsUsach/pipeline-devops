@@ -7,7 +7,7 @@
 def call(String[] stages){
 
     boolean allStages = false;
-    String[] availableStageList = ["Validate", "Compile", "Test", "Jar", "SonarQube", "Run", "Wait", "Curl", "Nexus"];
+    String[] availableStageList = ["Compile", "Test", "Jar", "SonarQube", "Run", "Wait", "Curl", "Nexus"];
 
     stage('Validate'){
         if (stages.size() == 0){
