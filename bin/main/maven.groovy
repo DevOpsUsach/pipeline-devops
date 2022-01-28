@@ -15,7 +15,7 @@ def call(String[] stages){
         }else{
             for(_stage in stages){
                 if(!availableStageList.contains(_stage) ){
-                    error("El stage ${_stage} no existe.")
+                    error("El stage ${_stage} no existe para ${params.stage}")
                 }
             }
         }

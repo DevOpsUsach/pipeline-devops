@@ -5,12 +5,19 @@
 */
 
 def call(String[] stages){
-    
+
     boolean allStages = false;
+    String[] availableStageList = ["BuildTest", "SonarQube", "Run", "Wait", "Curl", "Nexus"];
 
     stage('Validate'){
         if (stages.size() == 0){
             allStages = true
+        }else{
+            for(_stage in stages){
+                if(!availableStageList.contains(_stage) ){
+                    error("El stage ${_stage} no existe para ${params.stage}")
+                }
+            }
         }
     }
   
