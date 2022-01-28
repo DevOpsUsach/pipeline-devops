@@ -10,6 +10,7 @@ def call(String[] stages){
 
     stage('Validate'){
         if (stages.size() == 0){
+            println "Stages ${stages.size()}"
             allStages = true
         }
     }
