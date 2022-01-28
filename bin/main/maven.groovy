@@ -9,7 +9,7 @@ def call(String[] stages){
     boolean allStages = false;
 
     stage('Validate'){
-        if (stages.size == 0){
+        if (stages.length() == 0){
             allStages = true
         }
     }
