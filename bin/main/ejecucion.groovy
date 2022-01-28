@@ -34,7 +34,7 @@ def call(){
 
     post {
       success {
-        slackSend color: 'good', message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución de build número '${env.BUILD_NUMBER}' exitosa."
+        slackSend color: 'good', iconEmoji: "::beer::", message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución de build número '${env.BUILD_NUMBER}' exitosa."
       }
 
       failure {
