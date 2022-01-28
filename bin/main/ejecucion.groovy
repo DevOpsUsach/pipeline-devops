@@ -15,7 +15,7 @@ def call(){
         stage('Pipeline') {
           steps {
             script {
-              println "${params.stage}"
+              println "params stage ${params.stage}"
 
               String[] stages = [];
 
@@ -23,7 +23,7 @@ def call(){
                 stages = params.stage.split(';');
               }
 
-              println "${stages}"
+              println "Stages size ${stages.size()}, stages ${stages}"
 
               if (params.buildTool == 'gradle') {
                 gradle(stages) /* archivo gradle.groovy */

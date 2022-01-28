@@ -5,16 +5,24 @@
 */
 
 def call(String[] stages){
+    
+    boolean allStages = false;
+
+    stage('Validate'){
+        if (stages.size() == 0){
+            allStages = true
+        }
+    }
   
     stage('BuildTest'){
-        if (stages.contains("BuildTest")) {
+        if (stages.contains("BuildTest") || allStages ) {
             sh 'env'
             sh './gradlew clean build'
         }
     }
 
     stage('SonarQube') {
-        if (stages.contains("SonarQube")) {
+        if (stages.contains("SonarQube") || allStages ) {
             def scannerHome = tool 'SonarQube Scanner 4.6.2'
                 withSonarQubeEnv('SonarQube local'){
                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sonarqube-token -Dsonar.java.binaries=build"
@@ -23,26 +31,26 @@ def call(String[] stages){
     }
 
     stage('Run'){
-        if (stages.contains("Run")) {
+        if (stages.contains("Run") || allStages ) {
             sh "nohup bash gradlew bootRun &"
         }
     }
 
     stage('Wait') {
-        if (stages.contains("Wait")) {
+        if (stages.contains("Wait") || allStages ) {
             println "Sleep 20 seconds"
             sleep(time: 20, unit: "SECONDS")
         }
     }
 
     stage('Curl'){
-        if (stages.contains("Curl")) {
+        if (stages.contains("Curl") || allStages ) {
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         }
     }
 
     stage('Nexus') {
-        if (stages.contains("Nexus")) {
+        if (stages.contains("Nexus") || allStages ) {
             nexusPublisher nexusInstanceId: 'nexus',
             nexusRepositoryId: 'ejemplo-gradle',
             packages: [
