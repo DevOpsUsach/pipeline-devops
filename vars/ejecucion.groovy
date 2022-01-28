@@ -17,8 +17,11 @@ def call(){
             script {
               println "${params.stage}"
 
-              String[] stages;
-              stages = params.stage.split(';');
+              String[] stages = [];
+
+              if(params.stage.length() > 0){
+                stages = params.stage.split(';');
+              }
 
               println "${stages}"
 
