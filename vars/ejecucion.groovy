@@ -23,7 +23,7 @@ def call(){
               println "${stages}"
 
               if (params.buildTool == 'gradle') {
-                gradle() /* archivo gradle.groovy */
+                gradle(stages) /* archivo gradle.groovy */
               } else {
                 maven(stages) /* archivo maven.groovy */
               }
@@ -34,7 +34,7 @@ def call(){
 
     post {
       success {
-        slackSend color: 'good', iconEmoji: "::beer::", message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución de build número '${env.BUILD_NUMBER}' exitosa."
+        slackSend color: 'good', iconEmoji: "beer", message: "[${env.USER}][${env.JOB_NAME}][${params.buildTool}] Ejecución de build número '${env.BUILD_NUMBER}' exitosa."
       }
 
       failure {
