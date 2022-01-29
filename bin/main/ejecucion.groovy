@@ -25,10 +25,12 @@ def call(){
 
               println "Stages size ${stages.size()}, stages ${stages}"
 
+              def ci_or_cd = verifyBranchName()
+
               if (params.buildTool == 'gradle') {
-                gradle(stages) /* archivo gradle.groovy */
+                gradle(stages, verifyBranchName()) /* archivo gradle.groovy */
               } else {
-                maven(stages) /* archivo maven.groovy */
+                maven(stages, verifyBranchName()) /* archivo maven.groovy */
               }
             }
           }
@@ -46,6 +48,13 @@ def call(){
       }
     }
   }
+}
+
+def verifyBranchName(){
+  if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop') ){
+    return 'CI'
+  }
+  return 'CD'
 }
 
 return this;

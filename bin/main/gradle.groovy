@@ -4,10 +4,12 @@
 	ejecucion.call()
 */
 
-def call(String[] stages){
+def call(String[] stages, String pipelineType){
 
     boolean allStages = false;
     String[] availableStageList = ["BuildTest", "SonarQube", "Run", "Wait", "Curl", "Nexus"];
+
+    figlet pipelineType
 
     stage('Validate'){
         if (stages.size() == 0){
