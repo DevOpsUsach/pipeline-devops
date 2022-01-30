@@ -1,83 +1,97 @@
-/*
-	forma de invocación de método call:
-	def ejecucion = load 'script.groovy'
-	ejecucion.call()
-*/
-
 def call(String[] stages, String pipelineType){
 
-    boolean allStages = false;
-    String[] availableStageList = ["Compile", "Test", "Jar", "SonarQube", "Run", "Wait", "Curl", "Nexus"];
+    figlet "Maven"
 
-    figlet pipelineType
-
-    stage('Validate'){
-        if (stages.size() == 0){
-            allStages = true
-        }else{
-            for(_stage in stages){
-                if(!availableStageList.contains(_stage) ){
-                    error("El stage ${_stage} no existe para ${params.stage}")
-                }
-            }
-        }
-    }
-  
-    stage('Compile') {
-        if (stages.contains("Compile") || allStages ) {
+    if (pipelineType == "CI"){
+        figlet "Integración Continua"
+    
+        stage('Compile') {
+            figlet "Stage: ${env.STAGE_NAME}"
             sh "mvn clean compile -e"
         }
-    }
 
-    stage('Test') {
-        if (stages.contains("Test") || allStages ) {
+        stage('Test') {
+            figlet "Stage: ${env.STAGE_NAME}"
             sh "mvn clean test -e"
         }
-    }
 
-    stage('Jar') {
-        if (stages.contains("Jar") || allStages ) {
+        stage('Jar') {
+            figlet "Stage: ${env.STAGE_NAME}"
             sh "mvn clean package -e"
         }
-    }
 
-    stage('SonarQube') {
-        if (stages.contains("SonarQube") || allStages ) {
+        stage('SonarQube') {
+            figlet "Stage: ${env.STAGE_NAME}"
             def scannerHome = tool 'SonarQube Scanner 4.6.2'
                 withSonarQubeEnv('SonarQube local'){
                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sonarqube-token -Dsonar.java.binaries=build"
             }
         }
-    }
 
-    stage('Run') {
-        if (stages.contains("Run") || allStages ) {
-            sh "nohup mvn spring-boot:run &"
+        stage('Run'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            sh "nohup bash gradlew bootRun &"
         }
-    }
 
-    stage('Wait') {
-        if (stages.contains("Wait") || allStages ) {
-            println "Sleep 20 seconds"
+        stage('Wait') {
+            figlet "Stage: ${env.STAGE_NAME}"
+            figlet "Sleep 20 seconds"
             sleep(time: 20, unit: "SECONDS")
         }
-    }
 
-    stage('Curl') {
-        if (stages.contains("Curl") || allStages ) {
+        stage('Curl'){
+            figlet "Stage: ${env.STAGE_NAME}"
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         }
-    }
 
-    stage('Nexus') {
-        if (stages.contains("Nexus") || allStages ) {
+        stage('UploadSnapshotJar') {
+            figlet "Stage: ${env.STAGE_NAME}"
             nexusPublisher nexusInstanceId: 'nexus',
-            nexusRepositoryId: 'ejemplo-maven',
+            nexusRepositoryId: 'ejemplo-gradle',
             packages: [
                 [
                     $class: 'MavenPackage',
                     mavenAssetList: [
-                        [classifier: '', extension: '', filePath: "${env.WORKSPACE}/build/DevOpsUsach2020-0.0.1.jar"]
+                        [classifier: '', extension: '', filePath: "${env.WORKSPACE}/build/libs/DevOpsUsach2020-0.0.1.jar"]
+                    ],
+                    mavenCoordinate: [
+                        artifactId: 'DevOpsUsach2020',
+                        groupId: 'com.devopsusach2020',
+                        packaging: 'jar',
+                        version: '0.0.1å'
+                    ]
+                ]
+            ]
+        }
+    } else {
+        figlet "Delivery Continuo"
+
+        stage('DownloadSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            sh "curl -X GET -u admin:q1w2e3r4 http://localhost:8082/repository/nexus-taller10/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
+        }
+
+        stage('RunSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            sh "nohup java -jar DevOpsUsach2020-0.0.1.jar &"
+            figlet "Sleep 20 seconds"
+            sleep(time: 20, unit: "SECONDS")
+        }
+
+        stage('TestSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
+        }
+
+        stage('UploadSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            nexusPublisher nexusInstanceId: 'nexus',
+            nexusRepositoryId: 'ejemplo-gradle',
+            packages: [
+                [
+                    $class: 'MavenPackage',
+                    mavenAssetList: [
+                        [classifier: '', extension: '', filePath: "${env.WORKSPACE}/build/libs/DevOpsUsach2020-0.0.1.jar"]
                     ],
                     mavenCoordinate: [
                         artifactId: 'DevOpsUsach2020',

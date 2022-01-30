@@ -4,7 +4,6 @@ def call(){
 
     parameters {
       choice choices: ['gradle', 'maven'], description: 'Indicar herramienta de construcción', name: 'buildTool'
-      string(name: 'stage', defaultValue: '', description: 'Nombre de stage a ejecutar, para multiples stage usar ;')
     }
 
     tools {
@@ -15,22 +14,10 @@ def call(){
         stage('Pipeline') {
           steps {
             script {
-              println "params stage ${params.stage}"
-
-              String[] stages = [];
-
-              if(params.stage.length() > 0){
-                stages = params.stage.split(';');
-              }
-
-              println "Stages size ${stages.size()}, stages ${stages}"
-
-              def ci_or_cd = verifyBranchName()
-
               if (params.buildTool == 'gradle') {
-                gradle(stages, verifyBranchName()) /* archivo gradle.groovy */
+                gradle(verifyBranchName()) /* archivo gradle.groovy */
               } else {
-                maven(stages, verifyBranchName()) /* archivo maven.groovy */
+                maven(verifyBranchName()) /* archivo maven.groovy */
               }
             }
           }

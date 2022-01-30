@@ -1,65 +1,81 @@
-/*
-	forma de invocación de método call:
-	def ejecucion = load 'script.groovy'
-	ejecucion.call()
-*/
+def call(String pipelineType){
 
-def call(String[] stages, String pipelineType){
+    figlet "Gradle"
 
-    boolean allStages = false;
-    String[] availableStageList = ["BuildTest", "SonarQube", "Run", "Wait", "Curl", "Nexus"];
+    if (pipelineType == "CI"){
+        figlet "Integración Continua"
 
-    figlet pipelineType
-
-    stage('Validate'){
-        if (stages.size() == 0){
-            allStages = true
-        }else{
-            for(_stage in stages){
-                if(!availableStageList.contains(_stage) ){
-                    error("El stage ${_stage} no existe para ${params.stage}")
-                }
-            }
-        }
-    }
-  
-    stage('BuildTest'){
-        if (stages.contains("BuildTest") || allStages ) {
+        stage('BuildTest'){
+            figlet "Stage: ${env.STAGE_NAME}"
             sh 'env'
             sh './gradlew clean build'
         }
-    }
 
-    stage('SonarQube') {
-        if (stages.contains("SonarQube") || allStages ) {
+        stage('SonarQube') {
+            figlet "Stage: ${env.STAGE_NAME}"
             def scannerHome = tool 'SonarQube Scanner 4.6.2'
                 withSonarQubeEnv('SonarQube local'){
                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=sonarqube-token -Dsonar.java.binaries=build"
             }
         }
-    }
 
-    stage('Run'){
-        if (stages.contains("Run") || allStages ) {
+        stage('Run'){
+            figlet "Stage: ${env.STAGE_NAME}"
             sh "nohup bash gradlew bootRun &"
         }
-    }
 
-    stage('Wait') {
-        if (stages.contains("Wait") || allStages ) {
-            println "Sleep 20 seconds"
+        stage('Wait') {
+            figlet "Stage: ${env.STAGE_NAME}"
+            figlet "Sleep 20 seconds"
             sleep(time: 20, unit: "SECONDS")
         }
-    }
 
-    stage('Curl'){
-        if (stages.contains("Curl") || allStages ) {
+        stage('Curl'){
+            figlet "Stage: ${env.STAGE_NAME}"
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         }
-    }
 
-    stage('Nexus') {
-        if (stages.contains("Nexus") || allStages ) {
+        stage('UploadSnapshotJar') {
+            figlet "Stage: ${env.STAGE_NAME}"
+            nexusPublisher nexusInstanceId: 'nexus',
+            nexusRepositoryId: 'ejemplo-gradle',
+            packages: [
+                [
+                    $class: 'MavenPackage',
+                    mavenAssetList: [
+                        [classifier: '', extension: '', filePath: "${env.WORKSPACE}/build/libs/DevOpsUsach2020-0.0.1.jar"]
+                    ],
+                    mavenCoordinate: [
+                        artifactId: 'DevOpsUsach2020',
+                        groupId: 'com.devopsusach2020',
+                        packaging: 'jar',
+                        version: '0.0.1'
+                    ]
+                ]
+            ]
+        }
+    } else {
+        figlet "Delivery Continuo"
+
+        stage('DownloadSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            sh "curl -X GET -u admin:q1w2e3r4 http://localhost:8082/repository/nexus-taller10/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
+        }
+
+        stage('RunSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            sh "nohup java -jar DevOpsUsach2020-0.0.1.jar &"
+            figlet "Sleep 20 seconds"
+            sleep(time: 20, unit: "SECONDS")
+        }
+
+        stage('TestSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
+            sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
+        }
+
+        stage('UploadSnapshotJar'){
+            figlet "Stage: ${env.STAGE_NAME}"
             nexusPublisher nexusInstanceId: 'nexus',
             nexusRepositoryId: 'ejemplo-gradle',
             packages: [
@@ -77,6 +93,7 @@ def call(String[] stages, String pipelineType){
                 ]
             ]
         }
+
     }
 
 }
