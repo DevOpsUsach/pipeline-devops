@@ -84,23 +84,21 @@ def call(String[] stages, String pipelineType){
         }
 
         stage('UploadSnapshotJar'){
-            steps {
-                nexusArtifactUploader artifacts: [
-                        [
-                            artifactId: 'DevOpsUsach2020', 
-                            classifier: '', 
-                            file: 'DevOpsUsach2020-0.0.1.jar', 
-                            type: 'jar'
-                        ]
-                    ], 
-                    credentialsId: 'nexus-admin-user', 
-                    groupId: 'com.devopsusach2020', 
-                    nexusUrl: 'localhost:8082', 
-                    nexusVersion: 'nexus3', 
-                    protocol: 'http', 
-                    repository: 'ejemplo-gradle', 
-                    version: '1.0.0'
-                }
+            nexusArtifactUploader artifacts: [
+                [
+                    artifactId: 'DevOpsUsach2020', 
+                    classifier: '', 
+                    file: 'DevOpsUsach2020-0.0.1.jar', 
+                    type: 'jar'
+                ]
+            ], 
+            credentialsId: 'nexus-admin-user', 
+            groupId: 'com.devopsusach2020', 
+            nexusUrl: 'localhost:8082', 
+            nexusVersion: 'nexus3', 
+            protocol: 'http', 
+            repository: 'ejemplo-gradle', 
+            version: '1.0.0'
         }
     }
 
