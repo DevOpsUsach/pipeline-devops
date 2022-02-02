@@ -72,7 +72,7 @@ post {
 }
 
 def verifyBranchName(){
-    if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
+    if(env.GIT_BRANCH.contains('develop') || env.GIT_BRANCH.contains('feature-')){
         return 'CI'
     } 
     else {
