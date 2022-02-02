@@ -15,14 +15,14 @@ println "${env.GIT_BRANCH}"
 
 if (pipelineType == 'CI'){
     figlet 'Integración Continua'
-    stage('Build & Test'){
+    stage('build'){
         figlet 'Build & Test'
         STAGE = env.STAGE_NAME
         sh 'env'
         println "Stage: ${env.STAGE_NAME}"
         sh './gradlew clean build'
     }
-    stage('SonarQube Analysis'){
+    stage('sonar'){
         figlet 'SonarQube Analysis'        
         STAGE = env.STAGE_NAME
         sh 'env'
@@ -32,21 +32,21 @@ if (pipelineType == 'CI'){
         sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=pipeline-devops-labm3-gradle -Dsonar.sources=src -Dsonar.java.binaries=build"
         }
     }    
-    stage('Run Jar'){
+    stage('run'){
         figlet 'Run Jar'    
         STAGE = env.STAGE_NAME
         sh 'env'
         println "Stage: ${env.STAGE_NAME}"    
         sh 'JENKINS_NODE_COOKIE=dontKillMe nohup bash gradlew bootRun &'
     }
-        stage('Rest'){
-        figlet 'Rest'             
+        stage('test'){
+        figlet 'Test'             
         STAGE = env.STAGE_NAME
         sh 'env'
         println "Stage: ${env.STAGE_NAME}"    
         sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
     }
-        stage('NexusCI') {
+        stage('nexusci') {
         figlet 'NexusCI'            
         STAGE = env.STAGE_NAME
         sh 'env'
@@ -70,7 +70,7 @@ if (pipelineType == 'CI'){
     }   
     } else {
         figlet 'Delivery Continuo'
-        stage('downloadNexus'){
+        stage('download'){
         figlet 'Download Nexus'            
         STAGE = env.STAGE_NAME
         sh 'env'
@@ -80,21 +80,21 @@ if (pipelineType == 'CI'){
         sh "mv DevOpsUsach2020-0.0.1.jar DevOpsUsach2020-1.0.1.jar"
         sh "ls -ltr"
         }
-        stage('runDownloadedJar'){
+        stage('rundown'){
         figlet 'Run Downloaded Jar'            
         STAGE = env.STAGE_NAME
         sh 'env'
         println "Stage: ${env.STAGE_NAME}"   
         sh 'JENKINS_NODE_COOKIE=dontKillMe nohup bash gradlew bootRun &'
         }
-        stage('Rest'){
+        stage('rest'){
         figlet 'Rest' 
         STAGE = env.STAGE_NAME
         sh 'env'
         println "Stage: ${env.STAGE_NAME}" 
         sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         }
-        stage('nexusCD') {
+        stage('nexuscd') {
         figlet 'NexusCD' 
         STAGE = env.STAGE_NAME
         sh 'env'
