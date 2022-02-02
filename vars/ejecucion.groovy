@@ -32,9 +32,9 @@ pipeline {
                         figlet 'Stage Vacío'
                         env.PSTAGE = "ALL"
                         if (params.buildTool == 'gradle') {
-                            gradle()
+                            gradle(verifyBranchName())
                         }else {
-                            maven()
+                            maven(verifyBranchName())
                         }
                     } else {
                         def stages = params.stage.split(";")
@@ -45,9 +45,9 @@ pipeline {
                             env.PSTAGE = stages[i]
                             println "ESTOY EN: ${env.PSTAGE}" 
                             if (params.buildTool == "gradle") {
-                                gradle() 
+                                gradle(verifyBranchName()) 
                             } else {
-                                maven() 
+                                maven(verifyBranchName()) 
                             }
                         }    
                     }
