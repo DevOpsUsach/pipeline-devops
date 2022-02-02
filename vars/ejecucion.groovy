@@ -72,7 +72,7 @@ post {
 }
 
 def verifyBranchName(){
-    figlet '{GIT_BRANCH}'
+    figlet '${GIT_BRANCH}'
     if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
         return 'CI'
     } 
