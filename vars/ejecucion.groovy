@@ -22,14 +22,14 @@ def call(){
                                                         println "ALL"
                                                         env.STAGE = "NULL"
                                                         env.PSTAGE = "ALL"
-                                                        if (params.buildTool == "gradle") { gradle() } else { maven() }
+                                                        if (params.buildTool == "gradle") { gradle(verifyBranchName()) } else { maven(verifyBranchName()) }
                                                 } else {
                                                         println "Selectivo"
                                                         def stages = params.stage.split(";")
                                                         for (i=0; i < stages.size(); i++) {
                                                                 env.STAGE = "NULL"
                                                                 env.PSTAGE = stages[i]
-                                                                if (params.buildTool == "gradle") { gradle() } else { maven() }
+                                                                if (params.buildTool == "gradle") { gradle(verifyBranchName()) } else { maven(verifyBranchName()) }
                                                                 if (env.STAGE == 'NULL') { break }
                                                         }
                                                 }
@@ -61,6 +61,16 @@ def call(){
                         }
                 }
         }
+
+}
+
+def verifyBranchName(){
+    if(env.GIT_BRANCH.contains('develop') || env.GIT_BRANCH.contains('feature-')){
+        return 'CI'
+    }
+    else {
+        return 'CD'
+    }
 
 }
 
