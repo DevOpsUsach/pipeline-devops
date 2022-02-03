@@ -55,7 +55,7 @@ if (pipelineType == 'CI'){
         stage('Nexus') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
-                    nexusPublisher nexusInstanceId: 'test-nexus', nexusRepositoryId: 'test.nexus',
+                    nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
@@ -92,7 +92,7 @@ if (pipelineType == 'CI'){
         stage('Nexus') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
-                    nexusPublisher nexusInstanceId: 'test-nexus', nexusRepositoryId: 'test.nexus',
+                    nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
