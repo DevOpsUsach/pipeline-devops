@@ -2,5 +2,5 @@ projectKey=pipeline-devops
 serverUrl=http://localhost:9000
 serverVersion=9.2.4.50792
 dashboardUrl=http://localhost:9000/dashboard?id=pipeline-devops
-ceTaskId=AX7BUx3lLesWnnqGwW4Z
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AX7BUx3lLesWnnqGwW4Z
+ceTaskId=AX7BdxceLesWnnqGwW4g
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AX7BdxceLesWnnqGwW4g
