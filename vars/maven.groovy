@@ -49,7 +49,7 @@ if (pipelineType == 'CI'){
         stage('Test') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
-                    bat "start chrome http://localhost:8082/rest/mscovid/test?msg=testing"
+                    bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
                 }
         }
         stage('Nexus') {
@@ -59,7 +59,7 @@ if (pipelineType == 'CI'){
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
-                        filePath: 'C:/Users/Patric~1/Desktop/Ejercicio/ejemplo-maven/build/DevOpsUsach2020-0.0.1.jar']],
+                        filePath: 'C:/Users/Patric~1/.jenkins/workspace/Prueba-Stage_develop/build/DevOpsUsach2020-0.0.1.jar']],
                         mavenCoordinate: [artifactId: 'DevOpsUsach2020',
                         groupId: 'com.devopsusach2020',
                         packaging: 'jar',
@@ -72,7 +72,7 @@ if (pipelineType == 'CI'){
         stage('Download') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
-                    bat "curl -X GET -u admin:Pelusa50# http://localhost:8081/repository/test.nexus/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
+                    bat "curl -X GET -u admin:Pelusa50# http://localhost:8082/repository/test.nexus/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
                     bat "dir"
                 }
         }
@@ -86,7 +86,7 @@ if (pipelineType == 'CI'){
         stage('Test') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
-                    bat "start chrome http://localhost:8082/rest/mscovid/test?msg=testing"
+                    bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
                 }
         }
         stage('Nexus') {
@@ -96,7 +96,7 @@ if (pipelineType == 'CI'){
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
-                        filePath: 'C:/Users/Patric~1/Desktop/Ejercicio/ejemplo-maven/build/DevOpsUsach2020-0.0.1.jar']],
+                        filePath: 'C:/Users/Patric~1/.jenkins/workspace/Prueba-Stage_develop/build/DevOpsUsach2020-0.0.1.jar']],
                         mavenCoordinate: [artifactId: 'DevOpsUsach2020',
                         groupId: 'com.devopsusach2020',
                         packaging: 'jar',
