@@ -7,7 +7,7 @@
 def call(String pipelineType){
 
 figlet pipelineType
-figlet 'Gradle'
+figlet 'Maven'
 println "${env.GIT_BRANCH}"
 
 if (pipelineType == 'CI'){
