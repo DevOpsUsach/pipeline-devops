@@ -33,8 +33,8 @@ if (pipelineType == 'CI'){
         stage('Sonar') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
-                    def scannerHome = tool 'sonar-scanner';
-                    withSonarQubeEnv('sonar-server') {
+                    def scannerHome = tool 'scanner-devops';
+                    withSonarQubeEnv('sonar-devops') {
                     bat "C:/Users/Patric~1/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner.bat -Dsonar.projectKey=pipeline-devops -Dsonar.sources=src -Dsonar.java.binaries=build"
                     }
                 }
