@@ -1,12 +1,3 @@
-/*
-
-	forma de invocación de método call:
-
-	def ejecucion = load 'script.groovy'
-	ejecucion.call()
-
-*/
-
 def call(String pipelineType){
 
 figlet pipelineType
@@ -78,40 +69,56 @@ if (pipelineType == 'CI'){
                         ]
                     ]
         }
-    }   
+    }
+
+    if ("${env.GIT_BRANCH}" == "develop"){
+        stage('gitCreateRelease') {
+            if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
+                figlet env.STAGE_NAME           
+                STAGE = env.STAGE_NAME
+
+            }
+        }
+    }
+    
+
 } else {
-    figlet 'Delivery Continuo'
-    stage('download'){
+
+    figlet 'Despliegue Continuo'
+    stage('gitDiff'){
+        if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
+            figlet env.STAGE_NAME            
+            STAGE = env.STAGE_NAME
+            
+        }
+    }
+    
+    stage('nexusDownload'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Download Nexus'            
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"    
             sh "curl -X GET -u 'admin:koba' http://localhost:8081/repository/pipeline-devops-labm3/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
             sh "echo ${env.WORKSPACE}"
-            sh "mv DevOpsUsach2020-0.0.1.jar DevOpsUsach2020-1.0.1.jar"
+            //sh "mv DevOpsUsach2020-0.0.1.jar DevOpsUsach2020-1.0.1.jar"
             sh "ls -ltr"
         }
     }
-    stage('rundown'){
+    stage('run'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') { 
             figlet 'Run Downloaded Jar'            
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"   
             sh 'JENKINS_NODE_COOKIE=dontKillMe nohup bash gradlew bootRun &'
+            sleep 10
         }
     }
-    stage('rest'){
+    stage('test'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') { 
-            figlet 'Rest' 
+            figlet env.STAGE_NAME 
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}" 
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         }
     }
-    stage('nexuscd') {
+    /* stage('nexuscd') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCD' 
             STAGE = env.STAGE_NAME
@@ -134,7 +141,7 @@ if (pipelineType == 'CI'){
                         ]
                     ]
         }
-    }    
+    } */    
 } 
 
 }
