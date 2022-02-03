@@ -4,8 +4,14 @@
         ejecucion.call()
 */
 
-def call(){
+def call(String pipelineType){
 
+figlet pipelineType
+figlet 'Gradle'
+println "${env.GIT_BRANCH}"
+
+if (pipelineType == 'CI'){
+        figlet 'Integracion Continua'
         stage('Build') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
@@ -61,6 +67,8 @@ def call(){
                         ]]
                 }
         }
+} else {
+        figlet 'Delivery Continuo'
         stage('NexusDownload') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
@@ -68,7 +76,7 @@ def call(){
                     bat "dir"
                 }
         }
-
+}
 }
 
 return this;

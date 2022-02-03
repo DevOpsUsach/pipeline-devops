@@ -1,11 +1,10 @@
-$ cat gradle.groovy
 /*
         forma de invocación de método call:
         def ejecucion = load 'script.groovy'
         ejecucion.call()
 */
 
-def call(){
+def call(String pipelineType){
 
 figlet pipelineType
 figlet 'Gradle'
@@ -65,20 +64,20 @@ if (pipelineType == 'CI'){
                     bat "dir"
                 }
         }
-        stage('Run') {
+        stage('RunCD') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start /min gradlew bootRun &"
                     sleep 20
                 }
         }
-        stage('Test') {
+        stage('TestCD') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start chrome http://localhost:8082/rest/mscovid/test?msg=testing"
                 }
         }
-        stage('Nexus') {
+        stage('NexusCD') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'test-nexus', nexusRepositoryId: 'test.nexus',
@@ -93,7 +92,7 @@ if (pipelineType == 'CI'){
                         ]]
                 }
         }
-
+}
 }
 
 return this;
