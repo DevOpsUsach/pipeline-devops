@@ -1,3 +1,4 @@
+import helpers.*
 def call(String pipelineType){
 
 figlet pipelineType
@@ -10,8 +11,6 @@ if (pipelineType == 'CI'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
             figlet 'Build & Test'
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"
             sh './gradlew clean build'
         }
     }
@@ -19,8 +18,6 @@ if (pipelineType == 'CI'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {        
             figlet 'SonarQube Analysis'        
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"  
             def scannerHome = tool 'sonar-scanner';
             withSonarQubeEnv('sonarqube-server'){
                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=pipeline-devops-labm3-gradle -Dsonar.sources=src -Dsonar.java.binaries=build"
@@ -31,8 +28,6 @@ if (pipelineType == 'CI'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Run Jar'    
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"    
             sh 'JENKINS_NODE_COOKIE=dontKillMe nohup bash gradlew bootRun &'
             sleep 10
         }
@@ -41,8 +36,6 @@ if (pipelineType == 'CI'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Test'             
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"    
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         } 
     }
@@ -50,8 +43,6 @@ if (pipelineType == 'CI'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCI'            
             STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"    
             nexusPublisher nexusInstanceId: 'nexus',
             nexusRepositoryId: 'pipeline-devops-labm3',
             packages: [
@@ -68,6 +59,7 @@ if (pipelineType == 'CI'){
                             ]
                         ]
                     ]
+            sh "ls -ltr"
         }
     }
 
@@ -117,6 +109,29 @@ if (pipelineType == 'CI'){
             STAGE = env.STAGE_NAME
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         }
+    }
+
+    stage('gitMergeMain') {
+        STAGE = env.STAGE_NAME
+        figlet "Stage: ${env.STAGE_NAME}"
+        def git = new helpers.Git()
+        git.merge("${env.GIT_LOCAL_BRANCH}", 'main')
+
+    }
+
+    stage('gitMergeDevelop') {
+        STAGE = env.STAGE_NAME
+        figlet "Stage: ${env.STAGE_NAME}"
+        def git = new helpers.Git()
+        git.merge("${env.GIT_LOCAL_BRANCH}", 'develop')
+
+    }
+
+    stage('gitTagMaster') {
+        STAGE = env.STAGE_NAME
+        figlet "Stage: ${env.STAGE_NAME}"
+        def git = new helpers.Git()
+        git.tag("${env.GIT_LOCAL_BRANCH}",'main')
     }
     /* stage('nexuscd') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
