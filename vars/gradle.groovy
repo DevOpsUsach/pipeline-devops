@@ -43,6 +43,7 @@ if (pipelineType == 'CI'){
             sh 'env'
             println "Stage: ${env.STAGE_NAME}"    
             sh 'JENKINS_NODE_COOKIE=dontKillMe nohup bash gradlew bootRun &'
+            sleep 10
         }
     }
     stage('test'){
