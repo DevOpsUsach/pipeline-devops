@@ -64,20 +64,20 @@ if (pipelineType == 'CI'){
                     bat "dir"
                 }
         }
-        stage('RunCD') {
+        stage('Run') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start /min gradlew bootRun &"
                     sleep 20
                 }
         }
-        stage('TestCD') {
+        stage('Test') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start chrome http://localhost:8082/rest/mscovid/test?msg=testing"
                 }
         }
-        stage('NexusCD') {
+        stage('Nexus') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'test-nexus', nexusRepositoryId: 'test.nexus',

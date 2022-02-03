@@ -46,13 +46,13 @@ if (pipelineType == 'CI'){
                     sleep 20
                 }
         }
-        stage('TestApp') {
+        stage('Test') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start chrome http://localhost:8082/rest/mscovid/test?msg=testing"
                 }
         }
-        stage('NexusUpload') {
+        stage('Nexus') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'test-nexus', nexusRepositoryId: 'test.nexus',
@@ -69,11 +69,39 @@ if (pipelineType == 'CI'){
         }
 } else {
         figlet 'Delivery Continuo'
-        stage('NexusDownload') {
+        stage('Download') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "curl -X GET -u admin:Pelusa50# http://localhost:8081/repository/test.nexus/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
                     bat "dir"
+                }
+        }
+        stage('Run') {
+                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+                    env.STAGE=env.STAGE_NAME
+                    bat "start /min mvnw spring-boot:run &"
+                    sleep 20
+                }
+        }
+        stage('Test') {
+                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+                    env.STAGE=env.STAGE_NAME
+                    bat "start chrome http://localhost:8082/rest/mscovid/test?msg=testing"
+                }
+        }
+        stage('Nexus') {
+                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+                    env.STAGE=env.STAGE_NAME
+                    nexusPublisher nexusInstanceId: 'test-nexus', nexusRepositoryId: 'test.nexus',
+                    packages: [[$class: 'MavenPackage',
+                        mavenAssetList: [[classifier: '',
+                        extension: '',
+                        filePath: 'C:/Users/Patric~1/Desktop/Ejercicio/ejemplo-maven/build/DevOpsUsach2020-0.0.1.jar']],
+                        mavenCoordinate: [artifactId: 'DevOpsUsach2020',
+                        groupId: 'com.devopsusach2020',
+                        packaging: 'jar',
+                        version: '1.0.0']
+                        ]]
                 }
         }
 }
