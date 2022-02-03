@@ -18,6 +18,7 @@ def call(){
                         stage('PipeLine') {
                                 steps {
                                         script {
+						println checkOs()
                                                 if (params.stage.length() == 0) {
                                                         println "ALL"
                                                         env.STAGE = "NULL"
@@ -69,6 +70,22 @@ def verifyBranchName(){
         return 'CI'
     } else {
         return 'CD'
+    }
+}
+
+def checkOs(){
+    if (isUnix()) {
+        def uname = sh script: 'uname', returnStdout: true
+        if (uname.startsWith("Darwin")) {
+            return "Macos"
+        }
+        // Optionally add 'else if' for other Unix OS
+        else {
+            return "Linux"
+        }
+    }
+    else {
+        return "Windows"
     }
 }
 
