@@ -87,7 +87,7 @@ if (pipelineType == 'CI'){
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
-                        filePath: "${env.WORKSPACE}/build/libs/DevOpsUsach2020-0.0.1.jar"]],
+                        filePath: "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar"]],
                         mavenCoordinate: [artifactId: 'DevOpsUsach2020',
                         groupId: 'com.devopsusach2020',
                         packaging: 'jar',
