@@ -1,75 +1,92 @@
+/*
+        forma de invocación de método call:
+        def ejecucion = load 'script.groovy'
+        ejecucion.call()
+*/
+
 def call(){
-  
-pipeline {
 
-	agent any
+        pipeline {
+        agent any
 
-    environment {
-	    STAGE = ''
-	}
-
-    parameters {
-    choice (name: 'buildTool', choices: ['gradle', 'maven'])
-    string (name: 'stage', defaultValue: '')
-    }
-
-	stages{
-        stage('Pipeline'){
-            steps{
-                script{
-                    env.STAGE = null
-                    env.PSTAGE = null
-                    if (params.stage == ''){
-                        figlet 'Stage Vacío'
-                        env.PSTAGE = "ALL"
-                        if (params.buildTool == 'gradle') {
-                            gradle(verifyBranchName())
-                        }else {
-                            maven(verifyBranchName())
-                        }
-                    } else {
-                        def stages = params.stage.split(";")
-                        println "STAGES: ${stages}"
-                        println "CANTIDAD de STAGES: ${stages.size()}"
-                        for (i=0; i < stages.size(); i++) {
-                            env.STAGE = null
-                            env.PSTAGE = stages[i]
-                            println "ESTOY EN: ${env.PSTAGE}" 
-                            if (params.buildTool == "gradle") {
-                                gradle(verifyBranchName()) 
-                            } else {
-                                maven(verifyBranchName()) 
-                            }
-                        }    
-                    }
+                parameters {
+                        choice choices: ['gradle', 'maven'], description: 'Indicar Herramienta de Construcción', name: 'buildTool'
+                        string(name: 'stage', defaultValue: '')
                 }
-            }
+
+                stages {
+                        stage('PipeLine') {
+                                steps {
+                                        script {
+						println checkOs()
+                                                if (params.stage.length() == 0) {
+                                                        println "ALL"
+                                                        env.STAGE = "NULL"
+                                                        env.PSTAGE = "ALL"
+                                                        if (params.buildTool == "gradle") { gradle(verifyBranchName()) } else { maven(verifyBranchName()) }
+                                                } else {
+                                                        println "Selectivo"
+                                                        def stages = params.stage.split(";")
+                                                        for (i=0; i < stages.size(); i++) {
+                                                                env.STAGE = "NULL"
+                                                                env.PSTAGE = stages[i]
+                                                                if (params.buildTool == "gradle") { gradle(verifyBranchName()) } else { maven(verifyBranchName()) }
+                                                                if (env.STAGE == 'NULL') { break }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+
+                post {
+                        success {
+                                script {
+                                        if (env.STAGE == 'NULL' && env.PSTAGE != 'ALL') {
+                                                slackSend color: 'danger', message: "[${env.BUILD_USER}][${env.USUARIO}][${env.JOB_NAME}][${params.buildTool}] Ejecución fallida en stage ${env.PSTAGE}"
+                                                error "Ejecución fallida en stage ${env.PSTAGE}"
+                                        } else {
+                                                slackSend color: 'good', message: "[${env.BUILD_USER}][${env.USUARIO}][${env.JOB_NAME}][${params.buildTool}] Ejecución Exitosa!"
+                                        }
+                                }
+
+                        }
+
+                        failure {
+                                script {
+                                        if (env.STAGE != 'NULL' || env.PSTAGE == 'ALL') {
+                                                slackSend color: 'danger', message: "[${env.BUILD_USER}][${env.USUARIO}][${env.JOB_NAME}][${params.buildTool}] Ejecución fallida en stage ${env.STAGE}"
+                                                error "Ejecución fallida en stage ${env.STAGE}"
+                                        }
+                                }
+                        }
+                }
         }
-	}
-
-post {
-
-    success {
-        slackSend color: 'good', message: "Se ejecuta Build [${BUILD_ID}] por [${env.USER}] en Job/Branch [${env.JOB_NAME}] opción: [${params.buildTool}] - Ejecución exitosa."
-    }
-
-    failure {
-        slackSend color: 'danger', message: "Se ejecuta Build [${BUILD_ID}] por [${env.USER}] en Job/Branch [${env.JOB_NAME}] opción: [${params.buildTool}] - Ejecución fallida en stage: ${env.STAGE}."
-        error "Ejecución fallida en stage: ${env.STAGE}"
-    }
-}
-}
 
 }
 
 def verifyBranchName(){
-    if(env.GIT_BRANCH.contains('develop') || env.GIT_BRANCH.contains('feature-')){
+    if (env.GIT_BRANCH.contains('develop') || env.GIT_BRANCH.contains('feature-')) {
         return 'CI'
-    } 
-    else {
+    } else {
         return 'CD'
     }
+}
 
-}	
+def checkOs(){
+    if (isUnix()) {
+        def uname = sh script: 'uname', returnStdout: true
+        if (uname.startsWith("Darwin")) {
+            return "Macos"
+        }
+        // Optionally add 'else if' for other Unix OS
+        else {
+            return "Linux"
+        }
+    }
+    else {
+        return "Windows"
+    }
+}
 
 return this;
