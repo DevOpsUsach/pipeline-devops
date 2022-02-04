@@ -46,6 +46,15 @@ if (pipelineType == 'CI'){
                         ]]
                 }
         }
+
+	if ("${env.GIT_BRANCH}" == "develop") {
+		stage('gitCreateRelease') {
+                	if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+		    		figlet "Stage: ${env.STAGE_NAME}"
+                    		env.STAGE=env.STAGE_NAME
+			}
+		}
+	}
 } else {
         figlet 'Delivery Continuo'
         stage('nexusDownload') {
@@ -88,6 +97,34 @@ if (pipelineType == 'CI'){
                         ]]
                 }
         }
+
+	stage('gitMergeMain') {
+                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+		    figlet "Stage: ${env.STAGE_NAME}"
+                    env.STAGE=env.STAGE_NAME
+        	    def git = new helpers.Git()
+        	    git.merge("${env.GIT_LOCAL_BRANCH}", 'main')
+                }
+    	}
+
+    	stage('gitMergeDevelop') {
+                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+		    figlet "Stage: ${env.STAGE_NAME}"
+                    env.STAGE=env.STAGE_NAME
+        	    def git = new helpers.Git()
+        	    git.merge("${env.GIT_LOCAL_BRANCH}", 'develop')
+                }
+    	}
+
+    	stage('gitTagMaster') {
+                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+		    figlet "Stage: ${env.STAGE_NAME}"
+                    env.STAGE=env.STAGE_NAME
+        	    def git = new helpers.Git()
+        	    git.tag("${env.GIT_LOCAL_BRANCH}",'main')
+                }
+    	}
+
 }
 }
 
