@@ -7,6 +7,19 @@ def diff(String ramaOrigen, String ramaDestino){
     sh "git diff ${ramaOrigen} ${ramaDestino}"
 }
 
+def createRelease(String ramaOrigen, String ramaDestino){
+	println "Este método crea una rama ${ramaDestino} basada en ${ramaOrigen}"
+	withCredentials([gitUsernamePassword(credentialsId: 'token_github_jenkins', gitToolName: 'Default')]){
+
+		sh "git fetch --all"
+        checkout(ramaOrigen)        
+		sh """
+            git checkout -b ${ramaDestino}
+            git push origin ${ramaDestino}
+        """
+	}
+}
+
 def merge(String ramaOrigen, String ramaDestino){
 	println "Este método realiza un merge ${ramaOrigen} y ${ramaDestino}"
 	withCredentials([gitUsernamePassword(credentialsId: 'token_github_jenkins', gitToolName: 'Default')]){

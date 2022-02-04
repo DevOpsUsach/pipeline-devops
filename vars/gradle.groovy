@@ -86,7 +86,9 @@ if (pipelineType == 'CI'){
                   println "No se desea hacer un release. El pipeline debería continuar"
                 } else {
                   //currentBuild.result = 'SUCCESS'
-                  println "Pendiente: Vamos a proceder a crear un release"
+                  println "Pendiente: Parametrizar la versión con la que se crea el release"
+                  def git = new helpers.Git()
+                  git.crearRelease("${env.GIT_LOCAL_BRANCH}", "release-v1.0.1")
                 }
 
             }
@@ -106,7 +108,7 @@ if (pipelineType == 'CI'){
             git.diff('main', "${env.GIT_LOCAL_BRANCH}")
         }
     }
-    /*
+    
     stage('nexusDownload'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Download Nexus'            
@@ -154,7 +156,7 @@ if (pipelineType == 'CI'){
                         ]
                     ]
         }
-    }*/
+    }
     
 
     stage('gitMergeMain') {
