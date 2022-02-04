@@ -29,22 +29,7 @@ if (pipelineType == 'CI'){
                     }
                 }
         }
-        stage('run') {
-                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
-		    figlet "Stage: ${env.STAGE_NAME}"
-                    env.STAGE=env.STAGE_NAME
-                    bat "start /min gradlew bootRun &"
-                    sleep 20
-                }
-        }
-        stage('test') {
-                if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
-		    figlet "Stage: ${env.STAGE_NAME}"
-                    env.STAGE=env.STAGE_NAME
-                    bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
-                }
-        }
-        stage('nexusci') {
+        stage('nexusUpload') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop"
@@ -86,7 +71,7 @@ if (pipelineType == 'CI'){
                     bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
                 }
         }
-        stage('nexuscd') {
+        stage('nexusUpload') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD"
