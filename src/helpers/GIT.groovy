@@ -5,8 +5,8 @@ def merge(String ramaOrigen, String ramaDestino){
 	
 }
 
-def tag(String ramaOrigen, String ramaDestino){
-	println "Este método realiza un tag ${ramaOrigen} y ${ramaDestino}"
+def tag(String ramaOrigen){
+	println "Este método realiza un tag ${ramaOrigen}"
 
 }
 

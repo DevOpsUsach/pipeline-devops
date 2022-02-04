@@ -117,7 +117,7 @@ if (pipelineType == 'CI'){
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
         	    def git = new helpers.Git()
-        	    git.tag("${env.GIT_LOCAL_BRANCH}",'main')
+        	    git.tag("${env.GIT_LOCAL_BRANCH}")
                 }
     	}
 
