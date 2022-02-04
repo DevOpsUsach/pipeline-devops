@@ -54,8 +54,8 @@ post {
     }
 
     failure {
-        slackSend color: 'danger', message: "Se ejecuta Build [${BUILD_ID}] por [${env.USER}] en Job/Branch [${env.JOB_NAME}] opción: [${params.buildTool}] - Ejecución fallida en stage: ${STAGE}."
-        error "Ejecución fallida en stage: ${STAGE}"
+        slackSend color: 'danger', message: "Se ejecuta Build [${BUILD_ID}] por [${env.USER}] en Job/Branch [${env.JOB_NAME}] opción: [${params.buildTool}] - Ejecución fallida en stage: ${env.STAGE}."
+        error "Ejecución fallida en stage: ${env.STAGE}"
     }
 }
 }
