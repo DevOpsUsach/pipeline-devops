@@ -54,13 +54,13 @@ if (pipelineType == 'CI'){
         }
         stage('nexusci') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
-                    env.WORKSPACE='C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop'
+                    env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop"
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
-                        filePath: '${env.WORKSPACE}/build/DevOpsUsach2020-0.0.1.jar']],
+                        filePath: "${env.WORKSPACE}/build/DevOpsUsach2020-0.0.1.jar"]],
                         mavenCoordinate: [artifactId: 'DevOpsUsach2020',
                         groupId: 'com.devopsusach2020',
                         packaging: 'jar',
@@ -92,12 +92,13 @@ if (pipelineType == 'CI'){
         }
         stage('nexuscd') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+                    env.WORKSPACE='C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD'
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
-                        filePath: 'C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD/DevOpsUsach2020-0.0.1.jar']],
+                        filePath: "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar"]],
                         mavenCoordinate: [artifactId: 'DevOpsUsach2020',
                         groupId: 'com.devopsusach2020',
                         packaging: 'jar',
