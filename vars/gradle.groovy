@@ -68,6 +68,26 @@ if (pipelineType == 'CI'){
             if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
                 figlet env.STAGE_NAME           
                 STAGE = env.STAGE_NAME
+                userAborted = false
+                crearRelease = false
+                startMillis = System.currentTimeMillis()
+                timeoutMillis = 10000
+                
+                try {
+                  timeout(time: timeoutMillis, unit: 'MILLISECONDS') {
+                    input '¿Desea crear un nuevo release?'
+                  }
+                } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                    crearRelease = true
+                }
+                
+                if (crearRelease) {
+                  //currentBuild.result = 'ABORTED'
+                  println "No se desea hacer un release. El pipeline debería continuar"
+                } else {
+                  //currentBuild.result = 'SUCCESS'
+                  println "Pendiente: Vamos a proceder a crear un release"
+                }
 
             }
         }
@@ -81,7 +101,7 @@ if (pipelineType == 'CI'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet env.STAGE_NAME            
             STAGE = env.STAGE_NAME
-            
+            diff('main', "${env.GIT_LOCAL_BRANCH}")
         }
     }
     
@@ -90,8 +110,7 @@ if (pipelineType == 'CI'){
             figlet 'Download Nexus'            
             STAGE = env.STAGE_NAME
             sh "curl -X GET -u 'admin:koba' http://localhost:8082/repository/pipeline-devops-labm3/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
-            sh "echo ${env.WORKSPACE}"
-            //sh "mv DevOpsUsach2020-0.0.1.jar DevOpsUsach2020-1.0.1.jar"
+            sh "echo ${env.WORKSPACE}"            
             sh "ls -ltr"
         }
     }
@@ -111,9 +130,34 @@ if (pipelineType == 'CI'){
         }
     }
 
+    /*
+    stage('nexuscd') {
+        if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
+            figlet 'NexusCD' 
+            STAGE = env.STAGE_NAME
+            nexusPublisher nexusInstanceId: 'nexus',
+            nexusRepositoryId: 'pipeline-devops-labm3',
+            packages: [
+                        [
+                            $class: 'MavenPackage',
+                            mavenAssetList: [
+                            [classifier: '', extension: '', filePath: "${env.WORKSPACE}/DevOpsUsach2020-1.0.0.jar"]
+                            ],
+                            mavenCoordinate: [
+                            artifactId: 'DevOpsUsach2020',
+                            groupId: 'com.devopsusach2020',
+                            packaging: 'jar',
+                            version: '1.0.0'
+                            ]
+                        ]
+                    ]
+        }
+    }*/
+    
+
     stage('gitMergeMain') {
         STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"
+        figlet "Stage: ${env.STAGE_NAME}"        
         def git = new helpers.Git()
         git.merge("${env.GIT_LOCAL_BRANCH}", 'main')
 
@@ -121,42 +165,17 @@ if (pipelineType == 'CI'){
 
     stage('gitMergeDevelop') {
         STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"
+        figlet "Stage: ${env.STAGE_NAME}"        
         def git = new helpers.Git()
         git.merge("${env.GIT_LOCAL_BRANCH}", 'develop')
-
     }
 
     stage('gitTagMaster') {
         STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"
+        figlet "Stage: ${env.STAGE_NAME}"        
         def git = new helpers.Git()
         git.tag("${env.GIT_LOCAL_BRANCH}",'main')
-    }
-    /* stage('nexuscd') {
-        if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
-            figlet 'NexusCD' 
-            STAGE = env.STAGE_NAME
-            sh 'env'
-            println "Stage: ${env.STAGE_NAME}"    
-            nexusPublisher nexusInstanceId: 'nexus',
-            nexusRepositoryId: 'pipeline-devops-labm3',
-            packages: [
-                        [
-                            $class: 'MavenPackage',
-                            mavenAssetList: [
-                            [classifier: '', extension: '', filePath: "${env.WORKSPACE}/DevOpsUsach2020-1.0.1.jar"]
-                            ],
-                            mavenCoordinate: [
-                            artifactId: 'DevOpsUsach2020',
-                            groupId: 'com.devopsusach2020',
-                            packaging: 'jar',
-                            version: '1.0.1'
-                            ]
-                        ]
-                    ]
-        }
-    } */    
+    }    
 } 
 
 }
