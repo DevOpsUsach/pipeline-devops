@@ -42,11 +42,8 @@ def diff(String ramaOrigen, String ramaDestino){
 
 def merge(String ramaOrigen, String ramaDestino){
 	println "Este método realiza un merge ${ramaOrigen} y ${ramaDestino}"
-	withCredentials([usernamePassword(
-		credentialsId: 'token_github_jenkins',
-		gitToolName: 'Default'
-	)]){
-		
+	withCredentials([gitUsernamePassword(credentialsId: 'token_github_jenkins', gitToolName: 'Default')]){
+
 		sh "git fetch --all"
         checkout(ramaOrigen)
         checkout(ramaDestino)
@@ -60,10 +57,7 @@ def merge(String ramaOrigen, String ramaDestino){
 def tag(String ramaOrigen, String ramaDestino){
 	println "Este método realiza un tag en master de ${ramaOrigen}"
 	if (ramaOrigen.contains('release-v')){
-        withCredentials([usernamePassword(
-      
-            credentialsId: 'token_github_jenkins',
-            gitToolName: 'Default')]) {
+        withCredentials([gitUsernamePassword(credentialsId: 'token_github_jenkins', gitToolName: 'Default')]) {
 
 				checkout(ramaDestino)
 				def tagValue = ramaOrigen.split('release-')[1]
