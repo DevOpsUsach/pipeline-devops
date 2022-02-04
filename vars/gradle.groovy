@@ -106,7 +106,7 @@ if (pipelineType == 'CI'){
             git.diff('main', "${env.GIT_LOCAL_BRANCH}")
         }
     }
-    
+    /*
     stage('nexusDownload'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Download Nexus'            
@@ -132,7 +132,7 @@ if (pipelineType == 'CI'){
         }
     }
 
-    /*
+    
     stage('nexuscd') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCD' 
