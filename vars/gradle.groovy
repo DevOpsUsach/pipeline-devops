@@ -98,9 +98,11 @@ if (pipelineType == 'CI'){
 
     figlet 'Despliegue Continuo'
     stage('gitDiff'){
-        if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
-            figlet env.STAGE_NAME            
-            STAGE = env.STAGE_NAME
+        env.STAGE = env.STAGE_NAME
+        if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+            figlet env.STAGE_NAME
+            //def git = new helpers.Git()
+            //git.diff('main', "${env.GIT_LOCAL_BRANCH}")
             diff('main', "${env.GIT_LOCAL_BRANCH}")
         }
     }
