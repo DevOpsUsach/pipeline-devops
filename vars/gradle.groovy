@@ -102,9 +102,8 @@ if (pipelineType == 'CI'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
             env.STAGE = env.STAGE_NAME
             figlet env.STAGE_NAME
-            //def git = new helpers.Git()
-            //git.diff('main', "${env.GIT_LOCAL_BRANCH}")
-            diff('main', "${env.GIT_LOCAL_BRANCH}")
+            def git = new helpers.Git()
+            git.diff('main', "${env.GIT_LOCAL_BRANCH}")
         }
     }
     
