@@ -107,13 +107,12 @@ if (pipelineType == 'CI'){
                     }
 
                     if (nombreReleaseIngresado){
-                        echo ("La versión ingresada es: "+nombreRelease)
-                        if (nombreRelease != ""){
+                        //echo ("La versión ingresada es: "+nombreRelease)                        
+                        if (nombreRelease ==~ /release-v[0-9]+-[0-9]+-[0-9]+/){
                             def git = new helpers.Git()
                             git.createRelease("${env.GIT_LOCAL_BRANCH}", releaseSemVer)
                         }else{
-                            println "El nombre del release no puede ser vacío"
-                            currentBuild.result = 'ABORTED'
+                            error("El nombre del release no cumple con el patrón requerido. Nombre ingresado: " + nombreRelease)
                         }
                     }
                 } else {
