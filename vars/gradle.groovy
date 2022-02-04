@@ -94,6 +94,7 @@ if (pipelineType == 'CI'){
                     ok: 'Crear Release',
                     parameters: [
                         string(
+                            name: 'nombreRelease',
                             defaultValue: 'release-v', 
                             description: 'Nombre de la rama release a crear. Usar el formato release-v(major).(minor).(patch)',
                             trim: true
@@ -108,7 +109,7 @@ if (pipelineType == 'CI'){
                       git.createRelease("${env.GIT_LOCAL_BRANCH}", releaseSemVer)
 
                   }
-                  
+
                 }
 
             }
