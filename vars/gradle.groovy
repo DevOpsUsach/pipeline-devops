@@ -12,13 +12,13 @@ println "${env.GIT_BRANCH}"
 
 if (pipelineType == 'CI'){
         figlet 'Integracion Continua'
-        stage('Build') {
+        stage('build') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "./gradlew clean build"
                 }
         }
-        stage('Sonar') {
+        stage('sonar') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     def scannerHome = tool 'scaner-devops';
@@ -27,22 +27,22 @@ if (pipelineType == 'CI'){
                     }
                 }
         }
-        stage('Run') {
+        stage('run') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start /min gradlew bootRun &"
                     sleep 20
                 }
         }
-        stage('Test') {
+        stage('test') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
                 }
         }
-        stage('Nexus') {
+        stage('nexusci') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
-                    //filePath: 'C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop/build/libs/DevOpsUsach2020-0.0.1.jar']],
+                    env.WORKSPACE='C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop'
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
@@ -58,27 +58,27 @@ if (pipelineType == 'CI'){
         }
 } else {
         figlet 'Delivery Continuo'
-        stage('Download') {
+        stage('nexusDownload') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "curl -X GET -u admin:Pelusa50# http://localhost:8082/repository/test.nexus/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
                     bat "dir"
                 }
         }
-        stage('Run') {
+        stage('run') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start /min gradlew bootRun &"
                     sleep 20
                 }
         }
-        stage('Test') {
+        stage('test') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
                 }
         }
-        stage('Nexus') {
+        stage('nexuscd') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
