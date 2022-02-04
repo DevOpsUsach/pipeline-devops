@@ -22,7 +22,7 @@ if (pipelineType == 'CI'){
                     env.STAGE=env.STAGE_NAME
                     def scannerHome = tool 'scaner-devops';
                     withSonarQubeEnv('sonar-devops') {
-                    //bat "C:/Users/Patric~1/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner.bat -Dsonar.projectKey=pipeline-devops-gradle -Dsonar.sources=src -Dsonar.java.binaries=build"
+                    bat "C:/Users/Patric~1/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner.bat -Dsonar.projectKey=pipeline-devops-gradle -Dsonar.sources=src -Dsonar.java.binaries=build"
                     }
                 }
         }
