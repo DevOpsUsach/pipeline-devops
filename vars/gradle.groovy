@@ -88,7 +88,7 @@ if (pipelineType == 'CI'){
                   //currentBuild.result = 'SUCCESS'
                   println "Pendiente: Parametrizar la versión con la que se crea el release"
                   def git = new helpers.Git()
-                  git.crearRelease("${env.GIT_LOCAL_BRANCH}", "release-v1.0.1")
+                  git.createRelease("${env.GIT_LOCAL_BRANCH}", "release-v1.0.1")
                 }
 
             }
