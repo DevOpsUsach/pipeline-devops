@@ -88,18 +88,22 @@ if (pipelineType == 'CI'){
                   //currentBuild.result = 'SUCCESS'
                   println "Pendiente: Parametrizar la versión con la que se crea el release"
 
-                  def userInput = input(
+                  def releaseSemVer = input(
                     id: 'userInput', message: '¿Nombre del Release?', 
                     parameters: [
-                    [$class: 'TextParameterDefinition', defaultValue: 'None', description: 'Nombre de la rama release a crear. Usar el formato release-v(major).(minor).(patch)', name: 'ReleaseSemVer']
+                    [
+                        $class: 'String',                         
+                        defaultValue: 'release-v', 
+                        description: 'Nombre de la rama release a crear. Usar el formato release-v(major).(minor).(patch)',
+                        trim: true ]
                     ])
-                    echo ("La versión ingresada es: "+userInput['ReleaseSemVer'])
+                    echo ("La versión ingresada es: "+releaseSemVer)
                     
                 
-                  if ("${userInput['ReleaseSemVer']}".trim() != ""){
+                  if (releaseSemVer != ""){
 
                       def git = new helpers.Git()
-                      git.createRelease("${env.GIT_LOCAL_BRANCH}", "${userInput['ReleaseSemVer']}".trim())
+                      git.createRelease("${env.GIT_LOCAL_BRANCH}", releaseSemVer)
 
                   }
 
