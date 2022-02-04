@@ -93,6 +93,7 @@ if (pipelineType == 'CI'){
         stage('nexuscd') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
                     env.WORKSPACE='C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD'
+                    env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop"
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
