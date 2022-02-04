@@ -6,7 +6,7 @@ def merge(String ramaOrigen, String ramaDestino){
 	checkout(ramaOrigen)
 	checkout(ramaDestino)
 
-	sh """
+	bat """
 		git merge ${ramaOrigen}
 		git push origin ${ramaDestino}
 	"""
@@ -18,7 +18,7 @@ def tag(String ramaOrigen){
 }
 
 def checkout(String rama){
-	sh "git reset --hard HEAD; git checkout ${rama}; git pull origin ${rama}"
+	bat "git reset --hard HEAD; git checkout ${rama}; git pull origin ${rama}"
 }
 
 return this;
