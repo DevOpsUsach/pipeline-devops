@@ -15,7 +15,8 @@ def tag(String ramaOrigen){
 
 def checkout(String rama){
 	println "Checkout: ${rama}"
-	//bat "git reset --hard HEAD; git checkout ${rama}; git pull origin ${rama}"
+
+	bat "git reset --hard HEAD; git checkout ${rama}; git pull origin ${rama}"
 }
 
 return this;
