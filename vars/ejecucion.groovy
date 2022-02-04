@@ -43,10 +43,10 @@ def call(){
                         success {
                                 script {
                                         if (env.STAGE == 'NULL' && env.PSTAGE != 'ALL') {
-                                                slackSend color: 'danger', message: "[${env.BUILD_USER}][${env.USUARIO}][${env.JOB_NAME}][${params.buildTool}] Ejecución fallida en stage ${env.PSTAGE}"
+                                                slackSend color: 'danger', message: "[Grupo 3][Pipeline: ${env.JOB_NAME}][Tools: ${params.buildTool}][Stage: ${env.PSTAGE}][Resultado: NOK]"
                                                 error "Ejecución fallida en stage ${env.PSTAGE}"
                                         } else {
-                                                slackSend color: 'good', message: "[${env.BUILD_USER}][${env.USUARIO}][${env.JOB_NAME}][${params.buildTool}] Ejecución Exitosa!"
+                                                slackSend color: 'good', message: "[Grupo 3][${env.JOB_NAME}][${params.buildTool}][Resultado: OK]"
                                         }
                                 }
 
@@ -55,7 +55,7 @@ def call(){
                         failure {
                                 script {
                                         if (env.STAGE != 'NULL' || env.PSTAGE == 'ALL') {
-                                                slackSend color: 'danger', message: "[${env.BUILD_USER}][${env.USUARIO}][${env.JOB_NAME}][${params.buildTool}] Ejecución fallida en stage ${env.STAGE}"
+                                                slackSend color: 'danger', message: "[Grupo 3][Pipeline: ${env.JOB_NAME}][Tools: ${params.buildTool}][Stage: ${env.STAGE}][Resultado: NOK]"
                                                 error "Ejecución fallida en stage ${env.STAGE}"
                                         }
                                 }
