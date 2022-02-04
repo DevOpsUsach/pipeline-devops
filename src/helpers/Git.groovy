@@ -3,8 +3,8 @@ package helpers
 def merge(String ramaOrigen, String ramaDestino){
 	println "Este método realiza un merge ${ramaOrigen} y ${ramaDestino}"
 	
-	checkout(ramaOrigen)
-	checkout(ramaDestino)
+	//checkout(ramaOrigen)
+	//checkout(ramaDestino)
 
 }
 
@@ -14,7 +14,8 @@ def tag(String ramaOrigen){
 }
 
 def checkout(String rama){
-	bat "git reset --hard HEAD; git checkout ${rama}; git pull origin ${rama}"
+	println "Checkout: ${rama}"
+	//bat "git reset --hard HEAD; git checkout ${rama}; git pull origin ${rama}"
 }
 
 return this;
