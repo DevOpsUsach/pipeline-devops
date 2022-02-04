@@ -70,7 +70,6 @@ if (pipelineType == 'CI'){
                 STAGE = env.STAGE_NAME                
                 def workflow = new helpers.Workflow()
                 workflow.creacionRelease()
-
             }
         }
     }

@@ -80,27 +80,8 @@ if (pipelineType == 'CI'){
             if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
                 figlet env.STAGE_NAME           
                 STAGE = env.STAGE_NAME
-                userAborted = false
-                crearRelease = false
-                startMillis = System.currentTimeMillis()
-                timeoutMillis = 10000
-                
-                try {
-                  timeout(time: timeoutMillis, unit: 'MILLISECONDS') {
-                    input '¿Desea crear un nuevo release?'
-                  }
-                } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                    crearRelease = true
-                }
-                
-                if (crearRelease) {
-                  //currentBuild.result = 'ABORTED'
-                  println "No se desea hacer un release. El pipeline debería continuar"
-                } else {
-                  //currentBuild.result = 'SUCCESS'
-                  println "Pendiente: Vamos a proceder a crear un release"
-                }
-
+                def workflow = new helpers.Workflow()
+                workflow.creacionRelease()
             }
         }
     }
