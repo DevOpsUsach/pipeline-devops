@@ -4,7 +4,8 @@ def call(String pipelineType){
 
 figlet pipelineType
 figlet 'Gradle'
-println "${env.GIT_BRANCH}"
+println "GIT_BRANCH: ${env.GIT_BRANCH}"
+println "GIT_LOCAL_BRANCH: ${env.GIT_LOCAL_BRANCH}"
 
 if (pipelineType == 'CI'){
         figlet 'Integracion Continua'

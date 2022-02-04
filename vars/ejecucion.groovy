@@ -43,10 +43,10 @@ def call(){
                         success {
                                 script {
                                         if (env.STAGE == 'NULL' && env.PSTAGE != 'ALL') {
-                                                slackSend color: 'danger', message: "[Grupo 3][Pipeline: ${env.JOB_NAME}][Branch: ${env.GIT_LOCAL_BRANCH}][Tools: ${params.buildTool}][Stage: ${env.PSTAGE}][Resultado: NOK]"
+                                                slackSend color: 'danger', message: "[Grupo 3][Pipeline: ${env.JOB_NAME}][Branch: ${env.GIT_BRANCH}][Tools: ${params.buildTool}][Stage: ${env.PSTAGE}][Resultado: NOK]"
                                                 error "Ejecución fallida en stage ${env.PSTAGE}"
                                         } else {
-                                                slackSend color: 'good', message: "[Grupo 3][${env.JOB_NAME}][Branch: ${env.GIT_LOCAL_BRANCH}][${params.buildTool}][Resultado: OK]"
+                                                slackSend color: 'good', message: "[Grupo 3][${env.JOB_NAME}][Branch: ${env.GIT_BRANCH}][${params.buildTool}][Resultado: OK]"
                                         }
                                 }
 
@@ -55,7 +55,7 @@ def call(){
                         failure {
                                 script {
                                         if (env.STAGE != 'NULL' || env.PSTAGE == 'ALL') {
-                                                slackSend color: 'danger', message: "[Grupo 3][Pipeline: ${env.JOB_NAME}][Branch: ${env.GIT_LOCAL_BRANCH}][Tools: ${params.buildTool}][Stage: ${env.STAGE}][Resultado: NOK]"
+                                                slackSend color: 'danger', message: "[Grupo 3][Pipeline: ${env.JOB_NAME}][Branch: ${env.GIT_BRANCH}][Tools: ${params.buildTool}][Stage: ${env.STAGE}][Resultado: NOK]"
                                                 error "Ejecución fallida en stage ${env.STAGE}"
                                         }
                                 }
