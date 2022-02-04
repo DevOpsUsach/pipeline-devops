@@ -67,10 +67,8 @@ if (pipelineType == 'CI'){
         stage('gitCreateRelease') {
             if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
                 figlet env.STAGE_NAME           
-                STAGE = env.STAGE_NAME
-                userAborted = false
-                crearRelease = false
-                startMillis = System.currentTimeMillis()
+                STAGE = env.STAGE_NAME                
+                crearRelease = true                
                 timeoutMillis = 10000
                 
                 try {
@@ -78,38 +76,49 @@ if (pipelineType == 'CI'){
                     input '¿Desea crear un nuevo release?'
                   }
                 } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                    crearRelease = true
+                    crearRelease = false
                 }
                 
                 if (crearRelease) {
+                  //currentBuild.result = 'SUCCESS'
+                  
+                  nombreReleaseIngresado = true
+                  nombreRelease = ""
+                  timeoutMillis = 60000
+                  
+                  try {
+                    timeout(time: timeoutMillis, unit: 'MILLISECONDS') {
+                        def releaseSemVer = input(
+                            id: 'userInput', 
+                            message: '¿Nombre del Release?', 
+                            ok: 'Crear Release',
+                            parameters: [
+                                string(
+                                    name: 'nombreRelease',
+                                    defaultValue: 'release-v', 
+                                    description: 'Nombre de la rama release a crear. Usar el formato release-v(major).(minor).(patch)',
+                                    trim: true
+                                )
+                            ])
+                        nombreRelease = releaseSemVer
+                    }
+                    } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                        nombreReleaseIngresado = false
+                    }
+
+                    if (nombreReleaseIngresado){
+                        echo ("La versión ingresada es: "+nombreRelease)
+                        if (nombreRelease != ""){
+                            def git = new helpers.Git()
+                            git.createRelease("${env.GIT_LOCAL_BRANCH}", releaseSemVer)
+                        }else{
+                            println "El nombre del release no puede ser vacío"
+                            currentBuild.result = 'ABORTED'
+                        }
+                    }
+                } else {
                   //currentBuild.result = 'ABORTED'
                   println "No se desea hacer un release. El pipeline debería continuar"
-                } else {
-                  //currentBuild.result = 'SUCCESS'
-                  println "Pendiente: Parametrizar la versión con la que se crea el release"
-
-                  def releaseSemVer = input(
-                    id: 'userInput', 
-                    message: '¿Nombre del Release?', 
-                    ok: 'Crear Release',
-                    parameters: [
-                        string(
-                            name: 'nombreRelease',
-                            defaultValue: 'release-v', 
-                            description: 'Nombre de la rama release a crear. Usar el formato release-v(major).(minor).(patch)',
-                            trim: true
-                        )
-                    ])
-                    echo ("La versión ingresada es: "+releaseSemVer)
-                    
-                
-                  if (releaseSemVer != ""){
-
-                      def git = new helpers.Git()
-                      git.createRelease("${env.GIT_LOCAL_BRANCH}", releaseSemVer)
-
-                  }
-
                 }
 
             }
