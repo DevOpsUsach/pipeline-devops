@@ -24,7 +24,7 @@ if (pipelineType == 'CI'){
             }
         }
     }        
-    stage('run'){
+    /*stage('run'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Run Jar'    
             STAGE = env.STAGE_NAME
@@ -39,6 +39,7 @@ if (pipelineType == 'CI'){
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         } 
     }
+    */
     stage('nexusci') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCI'            
@@ -136,29 +137,19 @@ if (pipelineType == 'CI'){
                     ]
         }
     }
+
+
+    stage('gitMergeAndTag') {
+        
+        STAGE = env.STAGE_NAME
+        figlet "Stage: ${env.STAGE_NAME}"        
+        def workflow = new helpers.Workflow()
+        workflow.mergeAndTag("${env.GIT_LOCAL_BRANCH}")
+
+    }
     
 
-    stage('gitMergeMain') {
-        STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'main')
-
-    }
-
-    stage('gitMergeDevelop') {
-        STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'develop')
-    }
-
-    stage('gitTagMaster') {
-        STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.tag("${env.GIT_LOCAL_BRANCH}",'main')
-    }    
+     
 } 
 
 }

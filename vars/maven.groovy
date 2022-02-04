@@ -13,14 +13,14 @@ if (pipelineType == 'CI'){
         sh './mvnw clean compile -e'
       }
     }
-    stage('test') {
+    stage('unitTest') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
         figlet 'Test'  
         STAGE = env.STAGE_NAME
         sh "./mvnw clean test -e"
       }
     }
-    stage('package') {
+    stage('jar') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {      
         figlet 'Package'  
         STAGE = env.STAGE_NAME        
@@ -37,7 +37,7 @@ if (pipelineType == 'CI'){
         }
       }
     }
-    stage('run') {
+    /*stage('run') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
         figlet 'Run Jar'
         STAGE = env.STAGE_NAME        
@@ -51,8 +51,8 @@ if (pipelineType == 'CI'){
         STAGE = env.STAGE_NAME        
         sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
       }
-    }
-    stage('nexusci') {
+    }*/
+    stage('nexusUpload') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
         figlet 'NexusCI'    
         STAGE = env.STAGE_NAME        
@@ -89,7 +89,16 @@ if (pipelineType == 'CI'){
 
 } else {
   figlet 'Delivery Continuo'
-  stage('download'){
+  stage('gitDiff'){
+        
+        if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+            env.STAGE = env.STAGE_NAME
+            figlet env.STAGE_NAME
+            def git = new helpers.Git()
+            git.diff('main', "${env.GIT_LOCAL_BRANCH}")
+        }
+  }
+  stage('nexusDownload'){
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'Download Nexus'  
       STAGE = env.STAGE_NAME
@@ -98,7 +107,7 @@ if (pipelineType == 'CI'){
       sh "ls -ltr"
     }
   }
-  stage('rundown'){
+  stage('run'){
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'Run Downloaded Jar'   
       STAGE = env.STAGE_NAME      
@@ -106,35 +115,23 @@ if (pipelineType == 'CI'){
       sleep 10
     }
   }
-  stage('rest'){
+  stage('test'){
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'Rest'  
       STAGE = env.STAGE_NAME
       sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
     }
   }
-
-  stage('gitMergeMain') {
+  stage('gitMergeAndTag') {
+        
         STAGE = env.STAGE_NAME
         figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'main')
+        def workflow = new helpers.Workflow()
+        workflow.mergeAndTag("${env.GIT_LOCAL_BRANCH}")
 
-    }
+  }
 
-    stage('gitMergeDevelop') {
-        STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'develop')
-    }
-
-    stage('gitTagMaster') {
-        STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.tag("${env.GIT_LOCAL_BRANCH}",'main')
-    }
+  
   /*stage('nexuscd') {
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'NexusCD'    

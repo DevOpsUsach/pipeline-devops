@@ -1,5 +1,17 @@
 package helpers
 
+def mergeAndTag(String localBranchName){
+
+    def git = new helpers.Git()
+    figlet "Merge a rama main"
+    git.merge(localBranchName, 'main')
+    figlet "Merge a rama develop"
+    git.merge(localBranchName, 'develop')
+    figlet "Tag del release"
+    git.tag(localBranchName,'main')
+
+}
+
 def creacionRelease(){
 
     crearRelease = true                
