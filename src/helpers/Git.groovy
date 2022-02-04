@@ -6,7 +6,7 @@ def merge(String ramaOrigen, String ramaDestino){
 	checkout(ramaOrigen)
 	checkout(ramaDestino)
 
-	bat """
+	sh """
 		git merge ${ramaOrigen}
 		git push origin ${ramaDestino}
 	"""
