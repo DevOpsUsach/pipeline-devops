@@ -14,7 +14,7 @@ def createRelease(String ramaOrigen, String ramaDestino){
 		sh "git fetch --all"
         checkout(ramaOrigen)        
 		sh """
-			git branch -D ${ramaDestino}
+			git branch -D ${ramaDestino} || true
             git checkout -b ${ramaDestino}
             git push origin ${ramaDestino}
         """
