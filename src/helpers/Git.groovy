@@ -6,6 +6,11 @@ def merge(String ramaOrigen, String ramaDestino){
 	checkout(ramaOrigen)
 	checkout(ramaDestino)
 
+	sh """
+		git merge ${ramaOrigen}
+		git push origin ${ramaDestino}
+	"""
+
 }
 
 def tag(String ramaOrigen){
