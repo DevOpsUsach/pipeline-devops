@@ -13,13 +13,13 @@ def merge(String ramaOrigen, String ramaDestino){
 
 }
 
-def tag(String ramaOrigen){
+def tag(String ramaOrigen, String ramaDestino){
 	println "Este método realiza un tag ${ramaOrigen}"
 
 	if (ramaOrigen.contains('release-v')){
 		checkout(ramaDestino)
 		def tagValue = ramaOrigen.split('release-')[1]
-		sh """
+		bat """
 			git tag ${tagValue}
 			git push origin ${tagValue}
 		"""
