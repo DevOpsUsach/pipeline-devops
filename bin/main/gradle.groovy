@@ -10,6 +10,7 @@ if (pipelineType == 'CI'){
     stage('Fetch and Version'){
         figlet 'Fetch and Version'
         env.STAGE = env.STAGE_NAME
+        git.fetchAllTags()
         def version = get.getNextVersion("minor")
         figlet "Nueva versión ${version}"
     }

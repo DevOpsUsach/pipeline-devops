@@ -109,8 +109,6 @@ def fetchAllTags(){
 
 def getNextVersion(scope) {
 	println "Este método retorna la siguiente versión ${scope}."
-    
-	fetchAllTags()
 
 	def latestVersion = sh(returnStdout: true, script: 'git describe --tags `git rev-list --tags --max-count=1` 2> /dev/null || echo 0.0.0').trim()
     def (major, minor, patch) = latestVersion.tokenize('.').collect { it.toInteger() }
