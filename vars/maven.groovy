@@ -13,7 +13,7 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-		    if (checkOs()=="Windows") {
+		    if (ejecucion.checkOs()=="Windows") {
                     	bat "./mvnw.cmd clean compile -e"
 		    } else {
 		    	sh "./mvnw clean compile -e"
@@ -59,7 +59,9 @@ if (pipelineType == 'CI'){
         stage('nexusUpload') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
-                    env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop"
+		    if (checkOs()=="Windows") {
+                    	env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop"
+		    }
                     env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
