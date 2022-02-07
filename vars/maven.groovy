@@ -13,14 +13,14 @@ if (pipelineType == 'CI'){
         sh './mvnw clean compile -e'
       }
     }
-    stage('test') {
+    stage('unitTest') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
         figlet 'Test'  
         env.STAGE = env.STAGE_NAME
         sh "./mvnw clean test -e"
       }
     }
-    stage('package') {
+    stage('jar') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {      
         figlet 'Package'  
         env.STAGE = env.STAGE_NAME
@@ -37,7 +37,7 @@ if (pipelineType == 'CI'){
         }
       }
     }
-    stage('run') {
+    /*stage('run') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
         figlet 'Run Jar'
         env.STAGE = env.STAGE_NAME
@@ -51,8 +51,8 @@ if (pipelineType == 'CI'){
         env.STAGE = env.STAGE_NAME
         sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
       }
-    }
-    stage('nexusci') {
+    }*/
+    stage('nexusUpload') {
       if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
         figlet 'NexusCI'    
         env.STAGE = env.STAGE_NAME
@@ -78,29 +78,10 @@ if (pipelineType == 'CI'){
     if ("${env.GIT_BRANCH}" == "develop"){
         stage('gitCreateRelease') {
             if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
-                figlet env.STAGE_NAME           
-                env.STAGE = env.STAGE_NAME
-                userAborted = false
-                crearRelease = false
-                startMillis = System.currentTimeMillis()
-                timeoutMillis = 10000
-                
-                try {
-                  timeout(time: timeoutMillis, unit: 'MILLISECONDS') {
-                    input '¿Desea crear un nuevo release?'
-                  }
-                } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                    crearRelease = true
-                }
-                
-                if (crearRelease) {
-                  //currentBuild.result = 'ABORTED'
-                  println "No se desea hacer un release. El pipeline debería continuar"
-                } else {
-                  //currentBuild.result = 'SUCCESS'
-                  println "Pendiente: Vamos a proceder a crear un release"
-                }
-
+                figlet env.STAGE_NAME
+                STAGE = env.STAGE_NAME
+                def workflow = new helpers.Workflow()
+                workflow.creacionRelease()
             }
         }
     }
@@ -108,7 +89,16 @@ if (pipelineType == 'CI'){
 
 } else {
   figlet 'Delivery Continuo'
-  stage('download'){
+  stage('gitDiff'){
+        
+        if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
+            env.STAGE = env.STAGE_NAME
+            figlet env.STAGE_NAME
+            def git = new helpers.Git()
+            git.diff('main', "${env.GIT_LOCAL_BRANCH}")
+        }
+  }
+  stage('nexusDownload'){
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'Download Nexus'  
       env.STAGE = env.STAGE_NAME
@@ -117,7 +107,7 @@ if (pipelineType == 'CI'){
       sh "ls -ltr"
     }
   }
-  stage('rundown'){
+  stage('run'){
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'Run Downloaded Jar'   
       env.STAGE = env.STAGE_NAME
@@ -125,35 +115,23 @@ if (pipelineType == 'CI'){
       sleep 10
     }
   }
-  stage('rest'){
+  stage('test'){
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'Rest'  
       env.STAGE = env.STAGE_NAME
       sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
     }
   }
-
-  stage('gitMergeMain') {
-        env.STAGE = env.STAGE_NAME
+  stage('gitMergeAndTag') {
+        
+        STAGE = env.STAGE_NAME
         figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'main')
+        def workflow = new helpers.Workflow()
+        workflow.mergeAndTag("${env.GIT_LOCAL_BRANCH}")
+    
+  }
 
-    }
-
-    stage('gitMergeDevelop') {
-        env.STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'develop')
-    }
-
-    stage('gitTagMaster') {
-        env.STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.tag("${env.GIT_LOCAL_BRANCH}",'main')
-    }
+  
   /*stage('nexuscd') {
     if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
       figlet 'NexusCD'    

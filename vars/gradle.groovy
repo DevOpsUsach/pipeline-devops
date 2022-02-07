@@ -24,7 +24,7 @@ if (pipelineType == 'CI'){
             }
         }
     }        
-    stage('run'){
+    /*stage('run'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Run Jar'    
             env.STAGE = env.STAGE_NAME
@@ -39,6 +39,7 @@ if (pipelineType == 'CI'){
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         } 
     }
+    */
     stage('nexusci') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCI'            
@@ -66,29 +67,10 @@ if (pipelineType == 'CI'){
     if ("${env.GIT_BRANCH}" == "develop"){
         stage('gitCreateRelease') {
             if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
-                figlet env.STAGE_NAME           
-                env.STAGE = env.STAGE_NAME
-                userAborted = false
-                crearRelease = false
-                startMillis = System.currentTimeMillis()
-                timeoutMillis = 10000
-                
-                try {
-                  timeout(time: timeoutMillis, unit: 'MILLISECONDS') {
-                    input '¿Desea crear un nuevo release?'
-                  }
-                } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                    crearRelease = true
-                }
-                
-                if (crearRelease) {
-                  //currentBuild.result = 'ABORTED'
-                  println "No se desea hacer un release. El pipeline debería continuar"
-                } else {
-                  //currentBuild.result = 'SUCCESS'
-                  println "Pendiente: Vamos a proceder a crear un release"
-                }
-
+                figlet env.STAGE_NAME
+                STAGE = env.STAGE_NAME                
+                def workflow = new helpers.Workflow()
+                workflow.creacionRelease()
             }
         }
     }
@@ -132,7 +114,7 @@ if (pipelineType == 'CI'){
         }
     }
 
-    /*
+    
     stage('nexuscd') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCD' 
@@ -154,30 +136,20 @@ if (pipelineType == 'CI'){
                         ]
                     ]
         }
-    }*/
+
+    }
+
+    stage('gitMergeAndTag') {
+        
+        STAGE = env.STAGE_NAME
+        figlet "Stage: ${env.STAGE_NAME}"        
+        def workflow = new helpers.Workflow()
+        workflow.mergeAndTag("${env.GIT_LOCAL_BRANCH}")
+
+    }
     
 
-    stage('gitMergeMain') {
-        env.STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'main')
-
-    }
-
-    stage('gitMergeDevelop') {
-        env.STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.merge("${env.GIT_LOCAL_BRANCH}", 'develop')
-    }
-
-    stage('gitTagMaster') {
-        env.STAGE = env.STAGE_NAME
-        figlet "Stage: ${env.STAGE_NAME}"        
-        def git = new helpers.Git()
-        git.tag("${env.GIT_LOCAL_BRANCH}",'main')
-    }    
+    
 } 
 
 }
