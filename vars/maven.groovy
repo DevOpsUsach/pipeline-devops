@@ -13,21 +13,27 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    bat "./mvnw.cmd clean compile -e"
+		    if (checkOs()=="windows") {
+                    	bat "./mvnw.cmd clean compile -e"
+		    }
                 }
         }
         stage('unitTest') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    bat "./mvnw.cmd clean test -e"
+		    if (checkOs()=="windows") {
+                    	bat "./mvnw.cmd clean test -e"
+		    }
                 }
         }
         stage('jar') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    bat "./mvnw.cmd clean package -e"
+		    if (checkOs()=="windows") {
+                    	bat "./mvnw.cmd clean package -e"
+		    }
                 }
         }
         stage('sonar') {

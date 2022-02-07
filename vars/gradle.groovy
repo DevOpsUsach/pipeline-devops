@@ -13,7 +13,9 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    bat "./gradlew clean build"
+		    if (checkOs()=="windows") {
+                    	bat "./gradlew clean build"
+		    }
                 }
         }
         stage('sonar') {
