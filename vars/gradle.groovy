@@ -10,14 +10,14 @@ if (pipelineType == 'CI'){
     stage('build'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
             figlet 'Build & Test'
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             sh './gradlew clean build'
         }
     }
     stage('sonar'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {        
             figlet 'SonarQube Analysis'        
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             def scannerHome = tool 'sonar-scanner';
             withSonarQubeEnv('sonarqube-server'){
                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=pipeline-devops-labm3-gradle -Dsonar.sources=src -Dsonar.java.binaries=build"
@@ -27,7 +27,7 @@ if (pipelineType == 'CI'){
     /*stage('run'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Run Jar'    
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             sh 'JENKINS_NODE_COOKIE=dontKillMe nohup bash gradlew bootRun &'
             sleep 10
         }
@@ -35,7 +35,7 @@ if (pipelineType == 'CI'){
     stage('test'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Test'             
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         } 
     }
@@ -43,7 +43,7 @@ if (pipelineType == 'CI'){
     stage('nexusci') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCI'            
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             nexusPublisher nexusInstanceId: 'nexus',
             nexusRepositoryId: 'pipeline-devops-labm3',
             packages: [
@@ -67,7 +67,7 @@ if (pipelineType == 'CI'){
     if ("${env.GIT_BRANCH}" == "develop"){
         stage('gitCreateRelease') {
             if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
-                figlet env.STAGE_NAME           
+                figlet env.STAGE_NAME
                 STAGE = env.STAGE_NAME                
                 def workflow = new helpers.Workflow()
                 workflow.creacionRelease()
@@ -92,7 +92,7 @@ if (pipelineType == 'CI'){
     stage('nexusDownload'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'Download Nexus'            
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             sh "curl -X GET -u 'admin:koba' http://localhost:8082/repository/pipeline-devops-labm3/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
             sh "echo ${env.WORKSPACE}"            
             sh "ls -ltr"
@@ -101,7 +101,7 @@ if (pipelineType == 'CI'){
     stage('run'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') { 
             figlet 'Run Downloaded Jar'            
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             sh 'JENKINS_NODE_COOKIE=dontKillMe nohup bash gradlew bootRun &'
             sleep 10
         }
@@ -109,7 +109,7 @@ if (pipelineType == 'CI'){
     stage('test'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') { 
             figlet env.STAGE_NAME 
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
         }
     }
@@ -118,7 +118,7 @@ if (pipelineType == 'CI'){
     stage('nexuscd') {
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {         
             figlet 'NexusCD' 
-            STAGE = env.STAGE_NAME
+            env.STAGE = env.STAGE_NAME
             nexusPublisher nexusInstanceId: 'nexus',
             nexusRepositoryId: 'pipeline-devops-labm3',
             packages: [
@@ -136,8 +136,8 @@ if (pipelineType == 'CI'){
                         ]
                     ]
         }
-    }
 
+    }
 
     stage('gitMergeAndTag') {
         
@@ -149,7 +149,7 @@ if (pipelineType == 'CI'){
     }
     
 
-     
+    
 } 
 
 }
