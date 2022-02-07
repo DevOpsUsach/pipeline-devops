@@ -3,7 +3,7 @@ def call(String pipelineType){
 
 figlet pipelineType
 figlet 'Gradle'
-println "${env.GIT_BRANCH}"
+env.SONAR_NOMBRE_EJECUCION = new helpers.Workflow().obtenerNombreProyectoSonar(env.GIT_URL, env.GIT_BRANCH, env.BUILD_ID)
 
 if (pipelineType == 'CI'){
     figlet 'Integración Continua'
@@ -20,7 +20,7 @@ if (pipelineType == 'CI'){
             env.STAGE = env.STAGE_NAME
             def scannerHome = tool 'sonar-scanner';
             withSonarQubeEnv('sonarqube-server'){
-                sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=pipeline-devops-labm3-gradle -Dsonar.sources=src -Dsonar.java.binaries=build"
+                sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=${env.SONAR_NOMBRE_EJECUCION} -Dsonar.projectKey=pipeline-devops-labm3-gradle -Dsonar.sources=src -Dsonar.java.binaries=build"
             }
         }
     }        

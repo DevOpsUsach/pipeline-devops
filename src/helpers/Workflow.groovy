@@ -71,4 +71,10 @@ def creacionRelease(){
 
 }
 
+def obtenerNombreProyectoSonar(String urlRepo, String rama, String numeroEjecucion){
+	nombreRepo = urlRepo.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
+    nombreEjecucionSonar = "${nombreRepo}-${rama}-${numeroEjecucion}"
+    return nombreEjecucionSonar
+}
+
 return this;
