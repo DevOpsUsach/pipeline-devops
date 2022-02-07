@@ -91,31 +91,49 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    bat "curl -X GET -u admin:Pelusa50# http://localhost:8082/repository/devops-nexus/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
-                    bat "dir"
+		    if (ejecucion.checkOs()=="Windows") {
+      			bat "curl -X GET -u 'admin:koba' http://localhost:8082/repository/pipeline-devops-labm3/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
+      			bat "echo ${env.WORKSPACE}"
+                    	bat "dir"
+		    } else {
+      			sh "curl -X GET -u 'admin:koba' http://localhost:8082/repository/pipeline-devops-labm3/com/devopsusach2020/DevOpsUsach2020/0.0.1/DevOpsUsach2020-0.0.1.jar -O"
+      			sh "echo ${env.WORKSPACE}"
+      			sh "ls -ltr"
+		    }
                 }
         }
         stage('run') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    bat "start /min mvnw spring-boot:run &"
-                    sleep 20
+		    if (ejecucion.checkOs()=="Windows") {
+                    	bat "start /min mvnw spring-boot:run &"
+                    	sleep 10
+		    } else {
+		    	sh "JENKINS_NODE_COOKIE=dontKillMe nohup bash mvnw spring-boot:run &"
+                    	sleep 10
+		    }
                 }
         }
         stage('test') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
+		    if (ejecucion.checkOs()=="Windows") {
+                    	bat "start chrome http://localhost:8081/rest/mscovid/test?msg=testing"
+		    } else {
+		    	sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
+		    }
                 }
         }
         stage('nexusUpload') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
-                    env.WORKSPACE='C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD'
                     env.STAGE=env.STAGE_NAME
-                    nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
+		    if (ejecucion.checkOs()=="Windows") {
+                    	env.WORKSPACE='C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD'
+		    }
+                    nexusPublisher nexusInstanceId: 'nexus', nexusRepositoryId: 'pipeline-devops-labm3',
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
