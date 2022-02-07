@@ -13,7 +13,7 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-		    if (checkOs()=="windows") {
+		    if (checkOs()=="Windows") {
                     	bat "./mvnw.cmd clean compile -e"
 		    } else {
 		    	sh "./mvnw clean compile -e"
@@ -24,7 +24,7 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-		    if (checkOs()=="windows") {
+		    if (checkOs()=="Windows") {
                     	bat "./mvnw.cmd clean test -e"
 		    } else {
 		    	sh "./mvnw clean test -e"
@@ -35,7 +35,7 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-		    if (checkOs()=="windows") {
+		    if (checkOs()=="Windows") {
                     	bat "./mvnw.cmd clean package -e"
 		    } else {
 		    	sh "./mvnw clean package -e"
@@ -48,7 +48,7 @@ if (pipelineType == 'CI'){
                     env.STAGE=env.STAGE_NAME
                     def scannerHome = tool 'sonar-scaner';
                     withSonarQubeEnv('sonarqube-server') {
-		    if (checkOs()=="windows") {
+		    if (checkOs()=="Windows") {
                     	bat "C:/Users/Patric~1/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner.bat -Dsonar.projectKey=pipeline-devops -Dsonar.sources=src -Dsonar.java.binaries=build"
 		    } else {
 		    	sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=pipeline-devops-labm3-maven -Dsonar.sources=src -Dsonar.java.binaries=build"
