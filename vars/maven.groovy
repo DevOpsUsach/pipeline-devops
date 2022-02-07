@@ -131,7 +131,7 @@ if (pipelineType == 'CI'){
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
 		    if (ejecucion.checkOs()=="Windows") {
-                    	env.WORKSPACE='C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD'
+                    	env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/Taller-M3-CI-CD/Taller-M3-CD"
 		    }
                     nexusPublisher nexusInstanceId: 'nexus', nexusRepositoryId: 'pipeline-devops-labm3',
                     packages: [[$class: 'MavenPackage',
