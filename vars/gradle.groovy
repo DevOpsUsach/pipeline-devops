@@ -8,7 +8,9 @@ println "${env.GIT_BRANCH}"
 if (pipelineType == 'CI'){
     figlet 'Integración Continua'
     stage('Fetch and Version'){
-        def version = getNextVersion("minor")
+        figlet 'Fetch and Version'
+        env.STAGE = env.STAGE_NAME
+        def version = get.getNextVersion("minor")
         figlet "Nueva versión ${version}"
     }
     stage('build'){
