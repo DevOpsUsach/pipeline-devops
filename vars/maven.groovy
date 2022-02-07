@@ -46,7 +46,7 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-                    def scannerHome = tool 'sonar-scaner';
+                    def scannerHome = tool 'sonar-scanner';
                     withSonarQubeEnv('sonarqube-server') {
 		    if (ejecucion.checkOs()=="Windows") {
                     	bat "C:/Users/Patric~1/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner.bat -Dsonar.projectKey=pipeline-devops -Dsonar.sources=src -Dsonar.java.binaries=build"
@@ -59,10 +59,10 @@ if (pipelineType == 'CI'){
         stage('nexusUpload') {
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
+                    env.STAGE=env.STAGE_NAME
 		    if (ejecucion.checkOs()=="Windows") {
                     	env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop"
 		    }
-                    env.STAGE=env.STAGE_NAME
                     nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
