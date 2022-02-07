@@ -108,6 +108,12 @@ def fetchAllTags(){
 }
 
 def getNextVersion(scope) {
+	/**@
+	* @param scope debe ser un string con una de las siguientes 
+			 versiones(major, minor, patch)
+	* @return Una nueva versión
+	*/
+
 	println "Este método retorna la siguiente versión ${scope}."
 
 	def latestVersion = sh(returnStdout: true, script: "git describe --tags `git rev-list --tags --max-count=1` 2> /dev/null || echo 0.0.0").trim()

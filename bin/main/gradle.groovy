@@ -14,7 +14,7 @@ if (pipelineType == 'CI'){
         def git = new helpers.Git()
         git.fetchAllTags()
         def version = git.getNextVersion("minor")
-        figlet "Nueva versión ${version}"
+        figlet "Nueva versión -> ${version}"
     }
     stage('build'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
