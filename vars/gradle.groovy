@@ -13,7 +13,7 @@ if (pipelineType == 'CI'){
                 if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
 		    figlet "Stage: ${env.STAGE_NAME}"
                     env.STAGE=env.STAGE_NAME
-		    if (checkOs()=="Windows") {
+		    if (ejecucion.checkOs()=="Windows") {
                     	bat "./gradlew clean build"
 		    } else {
 		    	sh "./gradlew clean build"
