@@ -107,7 +107,7 @@ def fetchAllTags(){
     }
 }
 
-def getNextVersion(scope) {
+def getNextVersion(String rama, String scope) {
 	/**@
 	* @param scope debe ser un string con una de las siguientes 
 			 versiones(major, minor, patch)
@@ -134,7 +134,7 @@ def getNextVersion(scope) {
             nextVersion = "${major}.${minor}.${patch + 1}"
             break
     }
-    return nextVersion
+    return "v${nextVersion}"
 }
 
 return this;

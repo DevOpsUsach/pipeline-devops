@@ -11,10 +11,24 @@ if (pipelineType == 'CI'){
         figlet 'Fetch and Version'
         env.STAGE = env.STAGE_NAME
 
-        def git = new helpers.Git()
-        git.fetchAllTags()
-        def version = git.getNextVersion("minor")
-        figlet "Nueva versión  v${version}"
+        try {
+            String[] splitNombreRama;
+            splitNombreRama = env.GIT_BRANCH.split('-');
+
+            if (["major", "minor", "patch"].contains(splitNombreRama[1])){
+                def scope = splitNombreRama[1]
+                def git = new helpers.Git()
+                git.fetchAllTags()
+                def version = git.getNextVersion(scope)
+                figlet "Nueva versión  ${version}"
+            }else{
+                figlet "El nombre de la rama debe contener major, minor o patch ej: release-minor-xxxxx"
+            }
+
+        }catch(Exception ex) {
+            println ex
+        }
+
     }
     stage('build'){
         if (env.PSTAGE == env.STAGE_NAME || env.PSTAGE == 'ALL') {
