@@ -112,6 +112,7 @@ def getNextVersion(scope) {
 
 	def latestVersion = sh(returnStdout: true, script: "git describe --tags `git rev-list --tags --max-count=1` 2> /dev/null || echo 0.0.0").trim()
 	latestVersion = latestVersion.replaceAll("-", ".")
+	latestVersion = latestVersion.replaceAll("v", "")
 
     def (major, minor, patch) = latestVersion.tokenize('.').collect { it.toInteger() }
     def nextVersion
