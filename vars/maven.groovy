@@ -64,7 +64,7 @@ if (pipelineType == 'CI'){
 		    if (ejecucion.checkOs()=="Windows") {
                     	env.WORKSPACE="C:/Users/Patric~1/.jenkins/workspace/er-M3-CI-CD_Taller-M3-CI_develop"
 		    }
-                    nexusPublisher nexusInstanceId: 'devops-nexus', nexusRepositoryId: 'devops-nexus',
+                    nexusPublisher nexusInstanceId: 'nexus', nexusRepositoryId: 'pipeline-devops-labm3',
                     packages: [[$class: 'MavenPackage',
                         mavenAssetList: [[classifier: '',
                         extension: '',
