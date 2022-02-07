@@ -25,8 +25,8 @@ if (pipelineType == 'CI'){
                 figlet "El nombre de la rama debe contener major, minor o patch ej: release-minor-xxxxx"
             }
 
-        }catch(Exception ex) {
-            println ex
+        }catch(ArrayIndexOutOfBoundsException ex) {
+            error("El nombre de la rama debe contener major, minor o patch ej: release-minor-xxxxx")
         }
 
     }
