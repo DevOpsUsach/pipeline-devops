@@ -13,7 +13,7 @@ if (pipelineType == 'CI'){
 
         def git = new helpers.Git()
         git.fetchAllTags()
-        def version = get.getNextVersion("minor")
+        def version = git.getNextVersion("minor")
         figlet "Nueva versión ${version}"
     }
     stage('build'){
