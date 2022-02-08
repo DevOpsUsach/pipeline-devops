@@ -67,12 +67,13 @@ def tag(String ramaOrigen, String ramaDestino) {
 
                 if (ejecucion.checkOs() == 'Windows') {
                 bat """
+                    git tag -d ${tagValue}
                     git tag ${tagValue}
                     git push origin ${tagValue}
                 """
                 }else {
                 sh """
-                    git tag -d $(git tag -l)
+                    git tag -d ${tagValue}
                     git tag ${tagValue}
                     git push origin ${tagValue}
                 """
